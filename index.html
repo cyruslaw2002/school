@@ -3,271 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4C 班的活力小天地</title>
-    <!-- 引入 Tailwind CSS 進行快速、現代化的樣式設計 -->
+    <title>4C 班級網站</title>
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 Google Fonts: Noto Sans TC -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- 引入 Google Fonts (Noto Sans TC & Nunito for numbers) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Nunito:wght@800&display=swap" rel="stylesheet">
     <style>
-        /* 基礎設置與字體設定 */
-        body {
-            font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
-            background-color: #f8fafc; /* 極淺的藍灰色背景，讓白色卡片更凸顯 */
-            background-image: radial-gradient(#ffe4a0 0.5px, transparent 0.5px), radial-gradient(#ffe4a0 0.5px, #f8fafc 0.5px);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            /* 童趣圓點背景 */
+            background-color: #fdfbf7;
+            background-image: radial-gradient(#e5e7eb 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+        .number-font { font-family: 'Nunito', sans-serif; }
+        
+        /* 毛玻璃與高級陰影卡片 */
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px); 
+            border: 2px solid rgba(255, 255, 255, 0.9); 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03); 
         }
         
-        /* 自訂色彩變數方便維護 */
-        :root {
-            --warm-yellow: #ffde7a;
-            --sky-blue: #87ceeb;
-            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        /* 卡片懸浮互動效果 */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+            border-color: rgba(255, 255, 255, 1);
         }
 
-        .custom-shadow {
-            box-shadow: var(--card-shadow);
+        /* 漸層文字 */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3b82f6, #06b6d4, #10b981); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-size: 200% 200%;
+            animation: gradientMove 4s ease infinite;
         }
 
-        /* 簡單的浮動動畫 */
+        /* 漂浮動畫 */
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
         }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
-<body class="text-gray-800 antialiased min-h-screen flex flex-col">
+<body class="text-gray-700 min-h-screen relative pb-12 overflow-x-hidden">
 
-    <!-- ================= 前台公開視圖 (預設顯示) ================= -->
-    <div id="public-view" class="flex flex-col min-h-screen w-full transition-opacity duration-300">
+    <!-- Toast 提示訊息 (升級樣式) -->
+    <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-3 border border-gray-700">
+        <span id="toast-icon" class="text-xl">✨</span>
+        <span id="toast-msg" class="font-bold tracking-wide">提示訊息</span>
+    </div>
 
-    <!-- 1. 頂部橫幅 (Hero Banner) -->
-    <header class="w-full bg-gradient-to-r from-[#fff3cd] to-[#e0f2fe] pt-16 pb-20 px-4 rounded-b-[3rem] shadow-sm relative overflow-hidden">
-        <!-- 裝飾用背景元素 -->
-        <div class="absolute top-4 left-10 text-4xl opacity-50 animate-float" style="animation-delay: 0s;">☁️</div>
-        <div class="absolute top-10 right-20 text-5xl opacity-50 animate-float" style="animation-delay: 1s;">✨</div>
-        <div class="absolute bottom-6 left-1/4 text-3xl opacity-50 animate-float" style="animation-delay: 2s;">☀️</div>
+    <!-- ================= 前台首頁視圖 ================= -->
+    <div id="main-view" style="display: block;">
+        <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+            
+            <!-- 1. 頂部橫幅 Hero Banner -->
+            <header class="text-center py-12 px-6 glass-card rounded-[2.5rem] relative overflow-hidden group hover-lift">
+                <!-- 裝飾性背景光暈 -->
+                <div class="absolute -top-12 -left-12 w-40 h-40 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
+                <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
+                
+                <div class="text-6xl mb-6 animate-float inline-block">🏫</div>
+                <h1 class="text-4xl md:text-5xl font-black mb-4 text-gray-800 tracking-tight leading-tight">歡迎來到 <span class="gradient-text">4C 班</span><br class="md:hidden"> 的活力小天地</h1>
+                <p class="inline-block bg-blue-50 text-blue-600 font-bold text-lg md:text-xl px-6 py-2 rounded-full border border-blue-100 shadow-sm mt-2">
+                    團結、好奇、每天進步一點點！ 🚀
+                </p>
+            </header>
 
-        <div class="max-w-4xl mx-auto text-center relative z-10">
-            <div class="text-7xl mb-6 inline-block animate-float">🏫</div>
-            <h1 class="text-4xl md:text-5xl font-black text-gray-800 mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-blue-600">
-                歡迎來到 4C 班的活力小天地
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-700 font-medium mt-4 bg-white/50 inline-block px-6 py-2 rounded-full backdrop-blur-sm border border-white/50">
-                團結、好奇、每天進步一點點！🚀
-            </p>
-        </div>
-    </header>
-
-    <!-- 主要內容區 -->
-    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20 mb-16 space-y-8">
-
-        <!-- 2. 即時資訊小看板 (互動功能) -->
-        <section class="bg-white rounded-3xl custom-shadow p-6 sm:p-8 border-t-8 border-[#87ceeb] text-center transform transition duration-300 hover:scale-[1.01]">
-            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
-                <div class="flex items-center gap-3">
-                    <span class="text-4xl">📅</span>
-                    <div class="text-left">
-                        <p class="text-sm text-gray-500 font-bold uppercase tracking-wider">今天是</p>
-                        <h2 id="current-date" class="text-2xl font-bold text-gray-800">載入中...</h2>
-                    </div>
+            <!-- 2. 即時資訊小看板 (日期與倒數) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card hover-lift rounded-3xl p-6 text-center flex flex-col justify-center items-center relative overflow-hidden">
+                    <div class="absolute top-0 w-full h-1 bg-gradient-to-r from-yellow-300 to-yellow-400"></div>
+                    <span class="text-gray-400 text-sm font-bold mb-2 uppercase tracking-widest">Today</span>
+                    <div id="today-date" class="text-2xl font-black text-gray-700">載入中...</div>
                 </div>
-                <div class="hidden md:block w-px h-12 bg-gray-200"></div>
-                <div class="flex items-center gap-3 bg-blue-50 px-6 py-3 rounded-2xl">
-                    <span class="text-4xl">🎯</span>
-                    <div class="text-left">
-                        <p class="text-sm text-gray-500 font-bold">距離 <span id="event-name-display">下次長假</span> 還有</p>
-                        <p class="text-2xl font-bold text-gray-800">
-                            <span id="countdown-days" class="text-4xl text-[#3b82f6] mx-1 font-black">--</span> 天
-                        </p>
+                <div class="glass-card hover-lift rounded-3xl p-6 text-center flex flex-col justify-center items-center bg-gradient-to-br from-blue-50 to-cyan-50 relative overflow-hidden">
+                    <div class="absolute top-0 w-full h-1 bg-gradient-to-r from-blue-400 to-cyan-400"></div>
+                    <span id="countdown-title-display" class="text-blue-400/80 text-sm font-bold mb-2 uppercase tracking-widest">距離 目標 還有</span>
+                    <div class="text-4xl font-black text-blue-500 drop-shadow-sm flex items-baseline gap-1">
+                        <span id="countdown-days" class="number-font text-5xl">--</span> 
+                        <span class="text-xl">天</span> 🎯
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- 3. 4C 每日功課與重要通告欄 (雙欄設計) -->
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- 今日功課清單 -->
-            <div class="bg-white rounded-3xl custom-shadow overflow-hidden">
-                <div class="bg-[#fff3cd] px-6 py-4 border-b border-yellow-200 flex items-center gap-3">
-                    <span class="text-2xl">📝</span>
-                    <h3 class="text-xl font-bold text-yellow-900">今日功課清單</h3>
+            <!-- 3. 功課與通告 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 今日功課 -->
+                <div class="glass-card hover-lift rounded-3xl p-6 md:p-8 relative">
+                    <div class="absolute -left-2 top-8 w-4 h-12 bg-yellow-400 rounded-r-lg"></div>
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                        <span class="bg-yellow-100 p-2 rounded-xl text-2xl shadow-sm">📝</span> 
+                        今日功課清單
+                    </h2>
+                    <ul id="homework-list" class="space-y-4 text-lg font-medium text-gray-600">
+                        <li>載入中...</li>
+                    </ul>
                 </div>
-                <div class="p-6">
-                    <ul id="homework-list" class="space-y-4">
-                        <!-- 功課清單將由 JavaScript 動態載入 -->
+                <!-- 最新通告 -->
+                <div class="glass-card hover-lift rounded-3xl p-6 md:p-8 relative">
+                    <div class="absolute -left-2 top-8 w-4 h-12 bg-blue-400 rounded-r-lg"></div>
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                        <span class="bg-blue-100 p-2 rounded-xl text-2xl shadow-sm">📢</span> 
+                        最新班級通告
+                    </h2>
+                    <ul id="notices-list" class="space-y-4 text-lg font-medium text-gray-600">
+                        <li>載入中...</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- 最新班級通告 -->
-            <div class="bg-white rounded-3xl custom-shadow overflow-hidden">
-                <div class="bg-[#e0f2fe] px-6 py-4 border-b border-blue-200 flex items-center gap-3">
-                    <span class="text-2xl">📢</span>
-                    <h3 class="text-xl font-bold text-blue-900">最新班級通告</h3>
-                </div>
-                <div class="p-6">
-                    <div id="notices-list" class="space-y-6">
-                        <!-- 通告清單將由 JavaScript 動態載入 -->
+            <!-- 4. 榮譽榜 -->
+            <div class="glass-card rounded-[2.5rem] p-8 md:p-10 text-center relative overflow-hidden">
+                <!-- 背景點綴 -->
+                <div class="absolute top-0 right-0 p-8 opacity-10 text-8xl pointer-events-none">🏆</div>
+                
+                <h2 class="text-3xl font-black mb-10 inline-flex items-center gap-3">
+                    <span class="gradient-text">4C 榮譽榜</span>
+                    <span class="bg-gray-100 text-gray-500 text-sm py-1 px-3 rounded-full font-bold align-middle shadow-inner">本月之星</span>
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+                    <!-- 閱讀小達人 -->
+                    <div class="group bg-white/60 hover:bg-purple-50 p-6 rounded-3xl border border-purple-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                        <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center text-4xl mb-4 mx-auto shadow-inner group-hover:scale-110 transition-transform">📖</div>
+                        <div class="text-sm font-bold text-purple-400 uppercase tracking-widest mb-1">閱讀小達人</div>
+                        <div id="honor-1" class="text-2xl font-black text-purple-700">載入中...</div>
+                    </div>
+                    <!-- 熱心助人獎 -->
+                    <div class="group bg-white/60 hover:bg-red-50 p-6 rounded-3xl border border-red-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                        <div class="w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center text-4xl mb-4 mx-auto shadow-inner group-hover:scale-110 transition-transform">🤝</div>
+                        <div class="text-sm font-bold text-red-400 uppercase tracking-widest mb-1">熱心助人獎</div>
+                        <div id="honor-2" class="text-2xl font-black text-red-600">載入中...</div>
+                    </div>
+                    <!-- 進步之星 -->
+                    <div class="group bg-white/60 hover:bg-green-50 p-6 rounded-3xl border border-green-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                        <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center text-4xl mb-4 mx-auto shadow-inner group-hover:scale-110 transition-transform">⭐</div>
+                        <div class="text-sm font-bold text-green-400 uppercase tracking-widest mb-1">進步之星</div>
+                        <div id="honor-3" class="text-2xl font-black text-green-600">載入中...</div>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- 4. 4C 榮譽榜 (每月之星) -->
-        <section class="pt-8 pb-4">
-            <div class="text-center mb-10">
-                <span class="text-sm font-bold text-[#87ceeb] uppercase tracking-widest">Hall of Fame</span>
-                <h3 class="text-3xl font-black text-gray-800 mt-2">🏆 4C 榮譽榜 <span class="text-xl text-gray-500 font-medium">(本月之星)</span></h3>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <!-- 徽章卡片 1 -->
-                <div class="bg-white rounded-3xl custom-shadow p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-xl border-t-4 border-purple-400">
-                    <div class="w-20 h-20 mx-auto bg-purple-100 rounded-full flex items-center justify-center text-4xl mb-4">📖</div>
-                    <h4 class="text-lg font-bold text-gray-600">閱讀小達人</h4>
-                    <p class="text-2xl font-black text-purple-600 mt-2">陳小明</p>
-                </div>
-                <!-- 徽章卡片 2 -->
-                <div class="bg-white rounded-3xl custom-shadow p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-xl border-t-4 border-red-400">
-                    <div class="w-20 h-20 mx-auto bg-red-100 rounded-full flex items-center justify-center text-4xl mb-4">🤝</div>
-                    <h4 class="text-lg font-bold text-gray-600">熱心助人獎</h4>
-                    <p class="text-2xl font-black text-red-600 mt-2">李心穎</p>
-                </div>
-                <!-- 徽章卡片 3 -->
-                <div class="bg-white rounded-3xl custom-shadow p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-xl border-t-4 border-green-400">
-                    <div class="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center text-4xl mb-4">⭐</div>
-                    <h4 class="text-lg font-bold text-gray-600">進步之星</h4>
-                    <p class="text-2xl font-black text-green-600 mt-2">張子豪</p>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- 5. 給家長的話與頁尾 -->
-    <footer class="bg-white mt-auto pt-12 pb-8 border-t border-gray-100">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-2">
-                    <span>💌</span> 班主任的話
+            <!-- 5. 給家長的話 -->
+            <div class="glass-card hover-lift rounded-[2.5rem] p-8 md:p-10 text-center mt-4 border-t-4 border-t-pink-300">
+                <h3 class="text-2xl font-bold mb-6 inline-flex justify-center items-center gap-3 bg-pink-50 text-pink-600 px-6 py-2 rounded-full">
+                    💌 班主任的話
                 </h3>
-                <p class="text-gray-600 leading-relaxed max-w-2xl mx-auto bg-gray-50 p-6 rounded-2xl">
+                <p class="leading-loose text-gray-600 mb-8 text-lg font-medium max-w-2xl mx-auto">
                     親愛的家長您好：<br>
                     歡迎來到 4C 班的專屬網頁！這裡是我們分享孩子們學習點滴與重要資訊的小天地。我們相信每個孩子都有無限的潛能，期待在未來的日子裡，能與您攜手合作，陪伴孩子快樂學習、健康成長！
                 </p>
+                <div class="flex flex-wrap justify-center gap-3 text-sm font-bold text-gray-600">
+                    <div class="bg-white px-5 py-3 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-2 hover:bg-gray-50 transition">👩‍🏫 林老師 (Miss Lam)</div>
+                    <div class="bg-white px-5 py-3 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-2 hover:bg-gray-50 transition">📞 2345 6789</div>
+                    <div class="bg-white px-5 py-3 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-2 hover:bg-gray-50 transition">⏰ 15:30 - 17:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 後台管理視圖 ================= -->
+    <div id="admin-view" style="display: none;" class="max-w-3xl mx-auto px-4 py-8">
+        <div class="glass-card rounded-[2.5rem] p-8 md:p-10 border-t-8 border-gray-800 relative overflow-hidden">
+            <!-- 後台背景裝飾 -->
+            <div class="absolute -right-20 -top-20 text-[15rem] opacity-5 pointer-events-none">⚙️</div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-200 pb-6 gap-4 relative z-10">
+                <h2 class="text-3xl font-black flex items-center gap-3 text-gray-800">
+                    <span class="bg-gray-800 text-white p-2 rounded-xl text-xl shadow-lg">⚙️</span> 
+                    內容管理系統
+                </h2>
+                <button id="btn-logout" class="bg-white border-2 border-gray-200 hover:border-gray-800 hover:bg-gray-800 hover:text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2">
+                    <span>🔙</span> 返回首頁
+                </button>
             </div>
             
-            <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-12 text-sm text-gray-500 font-medium">
-                <div class="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg">
-                    <span>👩‍🏫</span> 班主任：林老師 (Miss Lam)
+            <div class="space-y-8 relative z-10">
+                <!-- 目標日期設定 -->
+                <div class="bg-white/80 p-6 rounded-2xl border border-gray-100 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 transition-all">
+                    <label class="flex items-center gap-2 font-bold mb-4 text-gray-700 text-lg">
+                        <span class="text-blue-500">🎯</span> 倒數計時設定
+                    </label>
+                    <div class="flex flex-col md:flex-row gap-3">
+                        <input type="text" id="edit-countdown-title" placeholder="例如：大考" class="w-full md:w-1/3 p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:bg-white transition">
+                        <input type="date" id="edit-countdown-date" class="w-full md:w-2/3 p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:bg-white transition text-gray-600 font-medium">
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg">
-                    <span>📞</span> 學校電話：2345 6789
+
+                <!-- 功課編輯 -->
+                <div class="bg-white/80 p-6 rounded-2xl border border-gray-100 shadow-sm focus-within:ring-2 focus-within:ring-yellow-400 transition-all">
+                    <label class="flex items-center gap-2 font-bold mb-4 text-gray-700 text-lg">
+                        <span class="text-yellow-500">📝</span> 今日功課 (每行一項)
+                    </label>
+                    <textarea id="edit-homework" rows="4" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:bg-white transition leading-relaxed resize-none"></textarea>
                 </div>
-                <div class="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg">
-                    <span>⏰</span> 聯絡時間：15:30 - 17:00
+
+                <!-- 通告編輯 -->
+                <div class="bg-white/80 p-6 rounded-2xl border border-gray-100 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 transition-all">
+                    <label class="flex items-center gap-2 font-bold mb-4 text-gray-700 text-lg">
+                        <span class="text-blue-500">📢</span> 最新通告 (每行一項)
+                    </label>
+                    <textarea id="edit-notices" rows="4" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:bg-white transition leading-relaxed resize-none"></textarea>
                 </div>
+
+                <!-- 榮譽榜編輯 -->
+                <div class="bg-white/80 p-6 rounded-2xl border border-gray-100 shadow-sm transition-all">
+                    <label class="flex items-center gap-2 font-bold mb-6 text-gray-700 text-lg">
+                        <span class="text-yellow-500">🏆</span> 榮譽榜學生姓名
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="bg-purple-50/50 p-4 rounded-xl border border-purple-100">
+                            <span class="text-sm text-purple-600 font-bold block mb-2 flex items-center gap-1">📖 閱讀小達人</span>
+                            <input type="text" id="edit-h1" class="w-full p-3 bg-white border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 transition text-center font-bold text-gray-700">
+                        </div>
+                        <div class="bg-red-50/50 p-4 rounded-xl border border-red-100">
+                            <span class="text-sm text-red-500 font-bold block mb-2 flex items-center gap-1">🤝 熱心助人獎</span>
+                            <input type="text" id="edit-h2" class="w-full p-3 bg-white border border-red-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 transition text-center font-bold text-gray-700">
+                        </div>
+                        <div class="bg-green-50/50 p-4 rounded-xl border border-green-100">
+                            <span class="text-sm text-green-600 font-bold block mb-2 flex items-center gap-1">⭐ 進步之星</span>
+                            <input type="text" id="edit-h3" class="w-full p-3 bg-white border border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 transition text-center font-bold text-gray-700">
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-save" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-black text-xl py-5 rounded-2xl shadow-xl transition-all transform hover:-translate-y-1 hover:shadow-2xl flex justify-center items-center gap-2">
+                    <span>💾</span> 儲存並發布至首頁
+                </button>
             </div>
-            <p class="mt-8 text-xs text-gray-400">
-                © 2026 4C 班級專頁. All rights reserved. | 
-                <a href="#" id="link-admin-login" class="underline hover:text-gray-600 transition">管理員後台登入</a>
-            </p>
         </div>
+    </div>
+
+    <!-- 頁尾與管理員入口 -->
+    <footer class="text-center text-gray-400 text-sm font-medium mt-12 pb-8">
+        &copy; 2026 4C 班級專頁. All rights reserved. 
+        <span class="mx-2 opacity-50">|</span> 
+        <button id="btn-login" class="hover:text-gray-800 transition-colors inline-flex items-center gap-1">
+            🔒 管理員登入
+        </button>
     </footer>
-    </div> <!-- /public-view 結束 -->
 
-    <!-- ================= 後台登入視圖 (預設隱藏) ================= -->
-    <div id="login-view" style="display: none;" class="min-h-screen flex-col items-center justify-center bg-gray-100 px-4">
-        <div class="bg-white p-8 rounded-3xl custom-shadow w-full max-w-md text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-400 to-blue-400"></div>
-            <div class="text-5xl mb-4">🔐</div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">班級網站後台登入</h2>
-            <form id="login-form" class="space-y-4 text-left">
-                <div>
-                    <label class="block text-sm font-bold text-gray-600 mb-1">帳號</label>
-                    <input type="text" id="login-username" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-300 bg-gray-50" placeholder="輸入 admin">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-600 mb-1">密碼</label>
-                    <input type="password" id="login-password" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-300 bg-gray-50" placeholder="輸入 123456">
-                </div>
-                <p id="login-error" class="text-red-500 text-sm hidden">帳號或密碼錯誤！</p>
-                <button type="submit" class="w-full py-3 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition shadow-lg mt-4">登入</button>
-            </form>
-            <button id="btn-cancel-login" class="mt-4 text-sm text-gray-500 hover:text-gray-700 underline">返回前台首頁</button>
-        </div>
-    </div>
-
-    <!-- ================= 後台管理系統視圖 (預設隱藏) ================= -->
-    <div id="admin-view" style="display: none;" class="min-h-screen bg-gray-100 flex-col">
-        <div class="max-w-4xl mx-auto w-full p-4 sm:p-8">
-            <!-- 後台頂部 -->
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-                <h2 class="text-3xl font-black text-gray-800 flex items-center gap-2"><span class="text-4xl">⚙️</span> 內容管理中心</h2>
-                <div class="flex gap-3">
-                    <button id="btn-back-home" class="px-5 py-2.5 bg-white text-gray-700 font-bold rounded-xl shadow hover:bg-gray-50 transition border">檢視前台</button>
-                    <button id="btn-logout" class="px-5 py-2.5 bg-red-100 text-red-600 font-bold rounded-xl shadow-sm hover:bg-red-200 transition">安全登出</button>
-                </div>
-            </div>
-            
-            <!-- 倒數計時設定 -->
-            <div class="bg-white p-6 rounded-3xl custom-shadow mb-8 border-l-8 border-blue-400">
-                <h3 class="font-bold text-xl mb-4 text-gray-800 flex items-center gap-2">🎯 倒數計時設定</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-600 mb-2">事件名稱</label>
-                        <input id="admin-event-name" type="text" class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-400 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-600 mb-2">目標日期</label>
-                        <input id="admin-event-date" type="date" class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-400 outline-none">
-                    </div>
-                </div>
-            </div>
-
-            <!-- 今日功課設定 -->
-            <div class="bg-white p-6 rounded-3xl custom-shadow mb-8 border-l-8 border-yellow-400">
-                <h3 class="font-bold text-xl mb-4 text-gray-800 flex items-center gap-2">📝 今日功課清單 (支援3項)</h3>
-                <div id="admin-homework-container" class="space-y-4">
-                    <!-- JS 生成輸入框 -->
-                </div>
-            </div>
-
-            <!-- 最新通告設定 -->
-            <div class="bg-white p-6 rounded-3xl custom-shadow mb-8 border-l-8 border-purple-400">
-                <h3 class="font-bold text-xl mb-4 text-gray-800 flex items-center gap-2">📢 最新班級通告 (支援2項)</h3>
-                <div id="admin-notices-container" class="space-y-6">
-                    <!-- JS 生成輸入框 -->
-                </div>
-            </div>
-
-            <button id="btn-save-admin" class="w-full py-4 bg-gradient-to-r from-green-400 to-emerald-500 text-white font-black text-xl rounded-2xl hover:opacity-90 transition shadow-lg mb-20 transform hover:scale-[1.01]">
-                💾 儲存所有變更並同步至雲端
-            </button>
-        </div>
-    </div>
-
-    <!-- 系統提示訊息 (Toast Notification) -->
-    <div id="toast-message" class="fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl transition-all duration-300 opacity-0 -translate-y-10 pointer-events-none z-[100] font-bold flex items-center gap-2">
-        <span>✨</span> <span id="toast-text">訊息提示</span>
-    </div>
-
-    <!-- JavaScript 互動與雲端即時同步邏輯 (Module) -->
+    <!-- ================= 核心程式碼 (無需更動) ================= -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ==========================================
-        // ★ 核心設定：您的專屬 Firebase 雲端資料庫設定
-        // ==========================================
-        // 如果您想要讓所有家長都能即時看到更新，請前往 https://firebase.google.com/ 建立一個免費專案，
-        // 並將取得的設定檔貼到下方的括號內（解除註解）。
-        const myFirebaseConfig = {
+        // 您的 Firebase 金鑰設定
+        const firebaseConfig = {
             apiKey: "AIzaSyBFFpZFZl4ckwJPnW4G0_cQ6qQrkzAAeE8",
             authDomain: "class-4c.firebaseapp.com",
             projectId: "class-4c",
@@ -277,278 +274,155 @@
             measurementId: "G-1B73TR3Z1G"
         };
 
-
-        // ==========================================
-        // 1. 資料狀態管理 (State Management)
-        // ==========================================
-        const defaultSiteData = {
-            targetDate: '2026-12-20',
-            eventName: '聖誕長假',
-            homework: [
-                { subject: '中文工作紙', detail: '完成第 12 至 13 頁（形近字練習）' },
-                { subject: '英文默書溫習', detail: '溫習 Unit 3 Vocab (1-10) 及兩句 Sentences' },
-                { subject: '數學練習', detail: '完成課本第 45 頁（兩位數乘法）' }
-            ],
-            notices: [
-                { title: '下週五便服日 (公益金)', detail: '下週五（11月20日）為公益金便服日，請同學帶備 $20 捐款並穿著整齊輕便服裝回校。' },
-                { title: '記得交回條！', detail: '請家長於本週五前簽妥並交回「秋季旅行家長同意書」回條給班主任。' }
-            ]
+        let classData = {
+            countdownTitle: "下一次大考", countdownDate: "2026-12-20",
+            homework: ["中文工作紙 (P.12-13)", "英文默書溫習", "數學課本練習 (Ch.4)"],
+            notices: ["下週五 (10/15) 為便服日", "請記得交回家長同意書回條"],
+            honors: { h1: "陳小明", h2: "李心穎", h3: "張子豪" }
         };
 
-        const LOCAL_STORAGE_KEY = 'class4c_local_data';
-        let siteData = { ...defaultSiteData };
+        let db = null;
+        let isCloudConnected = false;
 
-        // 嘗試載入本地暫存資料 (確保沒接資料庫時，F5重整也不會不見)
-        const savedLocalData = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (savedLocalData) {
-            try {
-                siteData = JSON.parse(savedLocalData);
-            } catch (e) { console.error("本地資料解析失敗", e); }
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            isCloudConnected = true;
+        } catch (error) {
+            isCloudConnected = false;
         }
 
-        const views = {
-            public: document.getElementById('public-view'),
-            login: document.getElementById('login-view'),
-            admin: document.getElementById('admin-view')
-        };
-
-        function showToast(message) {
-            const toast = document.getElementById('toast-message');
-            document.getElementById('toast-text').textContent = message;
-            toast.classList.remove('opacity-0', '-translate-y-10');
-            toast.classList.add('opacity-100', 'translate-y-0');
+        function showToast(msg, icon = "✨") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            document.getElementById('toast-icon').innerText = icon;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('translate-y-0');
             setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', '-translate-y-10');
+                toast.classList.add('opacity-0', 'translate-y-4');
+                toast.classList.remove('translate-y-0');
             }, 3000);
         }
 
-        function switchView(viewName) {
-            // 使用最強制的 Inline Style 控制顯示與隱藏，徹底解決任何 Tailwind CSS 類別衝突
-            views.public.style.display = 'none';
-            views.login.style.display = 'none';
-            views.admin.style.display = 'none';
-            
-            views[viewName].style.display = 'flex';
-            window.scrollTo(0, 0);
+        function switchView(view) {
+            if(view === 'admin') {
+                document.getElementById('main-view').style.display = 'none';
+                document.getElementById('admin-view').style.display = 'block';
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            } else {
+                document.getElementById('main-view').style.display = 'block';
+                document.getElementById('admin-view').style.display = 'none';
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
         }
 
-        // ==========================================
-        // 2. 核心功能與渲染 (Core Functions)
-        // ==========================================
-        function renderPublicView() {
+        function updateDateAndCountdown() {
             const now = new Date();
-            document.getElementById('current-date').textContent = now.toLocaleDateString('zh-HK', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            const days = ['日', '一', '二', '三', '四', '五', '六'];
+            document.getElementById('today-date').innerText = 
+                `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 (週${days[now.getDay()]})`;
 
-            document.getElementById('event-name-display').textContent = siteData.eventName || '下次活動';
-            const target = new Date((siteData.targetDate || '2026-12-20') + 'T00:00:00').getTime();
-            const difference = target - now.getTime();
-            const daysElement = document.getElementById('countdown-days');
+            const targetDate = new Date(classData.countdownDate);
+            const diffTime = targetDate - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             
-            if (difference > 0) {
-                daysElement.textContent = Math.ceil(difference / (1000 * 60 * 60 * 24));
-                daysElement.className = 'text-4xl text-[#3b82f6] mx-1 font-black';
-            } else {
-                daysElement.textContent = "0";
-                daysElement.className = 'text-4xl text-green-500 mx-1 font-black';
-                document.getElementById('event-name-display').textContent = (siteData.eventName || '活動') + '已到來！';
-            }
-
-            const hwList = document.getElementById('homework-list');
-            hwList.innerHTML = '';
-            (siteData.homework || []).forEach((hw, index) => {
-                hwList.innerHTML += `
-                    <li class="flex items-start gap-3 p-3 hover:bg-yellow-50 rounded-xl transition duration-200">
-                        <div class="mt-1 flex-shrink-0 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-sm">${index + 1}</div>
-                        <div><p class="font-bold text-gray-800 text-lg">${hw.subject}</p><p class="text-gray-600">${hw.detail}</p></div>
-                    </li>`;
-            });
-
-            const noticeList = document.getElementById('notices-list');
-            noticeList.innerHTML = '';
-            (siteData.notices || []).forEach(notice => {
-                noticeList.innerHTML += `
-                    <div class="relative pl-6 border-l-4 border-blue-400 mb-4 last:mb-0">
-                        <span class="absolute -left-[11px] top-1 w-5 h-5 bg-white border-4 border-blue-400 rounded-full"></span>
-                        <h4 class="font-bold text-lg text-gray-800">${notice.title}</h4>
-                        <p class="text-gray-600 mt-1">${notice.detail}</p>
-                    </div>`;
-            });
+            document.getElementById('countdown-title-display').innerText = `距離 ${classData.countdownTitle} 還有`;
+            document.getElementById('countdown-days').innerText = diffDays > 0 ? diffDays : "0";
         }
 
-        function renderAdminForm() {
-            document.getElementById('admin-event-name').value = siteData.eventName || '';
-            document.getElementById('admin-event-date').value = siteData.targetDate || '';
+        function renderDataToUI() {
+            const hwHtml = classData.homework.map(hw => `<li class="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-gray-100 shadow-sm"><span class="text-yellow-500 mt-0.5">👉</span><span class="font-bold text-gray-700">${hw}</span></li>`).join('');
+            document.getElementById('homework-list').innerHTML = hwHtml || '<li class="text-gray-400 italic">今日無功課</li>';
             
-            let hwHtml = '', noticeHtml = '';
-            for (let i = 0; i < 3; i++) {
-                const hw = (siteData.homework || [])[i] || { subject: '', detail: '' };
-                hwHtml += `
-                    <div class="flex flex-col sm:flex-row gap-2 items-start bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <div class="w-full sm:w-1/3">
-                            <label class="text-xs font-bold text-gray-500 mb-1 block">項目 ${i+1}</label>
-                            <input type="text" id="admin-hw-sub-${i}" value="${hw.subject}" class="w-full border rounded-lg p-2 outline-none focus:border-yellow-400">
-                        </div>
-                        <div class="w-full sm:w-2/3">
-                            <label class="text-xs font-bold text-gray-500 mb-1 block">詳情</label>
-                            <input type="text" id="admin-hw-det-${i}" value="${hw.detail}" class="w-full border rounded-lg p-2 outline-none focus:border-yellow-400">
-                        </div>
-                    </div>`;
-            }
-            document.getElementById('admin-homework-container').innerHTML = hwHtml;
+            const notiHtml = classData.notices.map(nt => `<li class="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-gray-100 shadow-sm"><span class="text-blue-500 mt-0.5">📌</span><span class="font-bold text-gray-700">${nt}</span></li>`).join('');
+            document.getElementById('notices-list').innerHTML = notiHtml || '<li class="text-gray-400 italic">暫無通告</li>';
+            
+            document.getElementById('honor-1').innerText = classData.honors.h1;
+            document.getElementById('honor-2').innerText = classData.honors.h2;
+            document.getElementById('honor-3').innerText = classData.honors.h3;
 
-            for (let i = 0; i < 2; i++) {
-                const notice = (siteData.notices || [])[i] || { title: '', detail: '' };
-                noticeHtml += `
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <label class="text-xs font-bold text-gray-500 mb-1 block">通告 ${i+1} 標題</label>
-                        <input type="text" id="admin-not-title-${i}" value="${notice.title}" class="w-full border rounded-lg p-2 mb-2 outline-none focus:border-blue-400">
-                        <label class="text-xs font-bold text-gray-500 mb-1 block">內容</label>
-                        <textarea id="admin-not-det-${i}" rows="2" class="w-full border rounded-lg p-2 outline-none focus:border-blue-400">${notice.detail}</textarea>
-                    </div>`;
-            }
-            document.getElementById('admin-notices-container').innerHTML = noticeHtml;
+            updateDateAndCountdown();
         }
 
-        // ==========================================
-        // 3. 綁定按鈕事件 (提前綁定確保介面不會卡死)
-        // ==========================================
-        document.getElementById('link-admin-login').addEventListener('click', (e) => {
-            e.preventDefault(); switchView('login');
-        });
-        document.getElementById('btn-cancel-login').addEventListener('click', () => switchView('public'));
-        document.getElementById('btn-back-home').addEventListener('click', () => switchView('public'));
-        document.getElementById('btn-logout').addEventListener('click', () => switchView('public'));
+        function populateAdminForm() {
+            document.getElementById('edit-countdown-title').value = classData.countdownTitle;
+            document.getElementById('edit-countdown-date').value = classData.countdownDate;
+            document.getElementById('edit-homework').value = classData.homework.join('\n');
+            document.getElementById('edit-notices').value = classData.notices.join('\n');
+            document.getElementById('edit-h1').value = classData.honors.h1;
+            document.getElementById('edit-h2').value = classData.honors.h2;
+            document.getElementById('edit-h3').value = classData.honors.h3;
+        }
 
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const user = document.getElementById('login-username').value;
-            const pass = document.getElementById('login-password').value;
-            if (user === 'admin' && pass === '123456') {
-                document.getElementById('login-error').classList.add('hidden');
-                document.getElementById('login-password').value = '';
-                renderAdminForm();
-                switchView('admin');
-                showToast('🔓 登入成功！');
+        function loadData() {
+            if (isCloudConnected) {
+                onSnapshot(doc(db, "website", "content"), (docSnap) => {
+                    if (docSnap.exists()) {
+                        classData = docSnap.data();
+                    }
+                    renderDataToUI();
+                });
             } else {
-                document.getElementById('login-error').classList.remove('hidden');
+                const localData = localStorage.getItem('class4C_data');
+                if (localData) classData = JSON.parse(localData);
+                renderDataToUI();
             }
-        });
+        }
 
-        document.getElementById('btn-save-admin').addEventListener('click', async () => {
-            const btn = document.getElementById('btn-save-admin');
-            btn.disabled = true; // 鎖定按鈕避免重複點擊
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
-            
-            // 擷取表單資料
-            const updatedData = {
-                eventName: document.getElementById('admin-event-name').value || '未命名',
-                targetDate: document.getElementById('admin-event-date').value || new Date().toISOString().split('T')[0],
-                homework: [],
-                notices: []
+        async function saveData() {
+            const btn = document.getElementById('btn-save');
+            btn.innerHTML = `<span class="animate-spin text-2xl">⏳</span> 儲存中...`;
+            btn.disabled = true;
+            btn.classList.add('opacity-80');
+
+            const newData = {
+                countdownTitle: document.getElementById('edit-countdown-title').value || '目標',
+                countdownDate: document.getElementById('edit-countdown-date').value || classData.countdownDate,
+                homework: document.getElementById('edit-homework').value.split('\n').filter(i => i.trim() !== ''),
+                notices: document.getElementById('edit-notices').value.split('\n').filter(i => i.trim() !== ''),
+                honors: {
+                    h1: document.getElementById('edit-h1').value || '從缺',
+                    h2: document.getElementById('edit-h2').value || '從缺',
+                    h3: document.getElementById('edit-h3').value || '從缺'
+                }
             };
 
-            for(let i=0; i<3; i++) {
-                const sub = document.getElementById(`admin-hw-sub-${i}`).value;
-                const det = document.getElementById(`admin-hw-det-${i}`).value;
-                if(sub || det) updatedData.homework.push({ subject: sub, detail: det });
-            }
-            for(let i=0; i<2; i++) {
-                const tit = document.getElementById(`admin-not-title-${i}`).value;
-                const det = document.getElementById(`admin-not-det-${i}`).value;
-                if(tit || det) updatedData.notices.push({ title: tit, detail: det });
+            if (isCloudConnected) {
+                try {
+                    await setDoc(doc(db, "website", "content"), newData);
+                    showToast("✅ 已成功發布至首頁！", "🚀");
+                } catch (error) {
+                    showToast("❌ 儲存失敗，請檢查權限", "⚠️");
+                }
+            } else {
+                localStorage.setItem('class4C_data', JSON.stringify(newData));
+                classData = newData;
+                renderDataToUI();
+                showToast("✨ 已儲存於本機", "💾");
             }
 
-            // 先更新本地畫面與 LocalStorage
-            siteData = updatedData;
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
-            renderPublicView();
-
-            if (!isFirebaseReady || !currentUser || !mainDocRef) {
-                showToast('⚠️ 已儲存於本機瀏覽器 (未連接雲端，其他人無法看見)');
-                switchView('public');
+            setTimeout(() => {
+                btn.innerHTML = `<span>💾</span> 儲存並發布至首頁`;
                 btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                return;
-            }
+                btn.classList.remove('opacity-80');
+            }, 500);
+        }
 
-            btn.textContent = '⏳ 同步中...';
-            
-            try {
-                await setDoc(mainDocRef, updatedData);
-                showToast('🎉 更新成功！資料已同步至雲端。');
-                switchView('public');
-            } catch (error) {
-                console.error("儲存失敗:", error);
-                showToast('❌ 同步失敗，僅於本機顯示。');
-                switchView('public');
-            } finally {
-                btn.textContent = '💾 儲存所有變更並同步至雲端';
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        document.getElementById('btn-login').addEventListener('click', () => {
+            const pwd = prompt("請輸入管理員密碼 (預設: 123456)");
+            if(pwd === "123456") {
+                populateAdminForm();
+                switchView('admin');
+                showToast("管理員身分已驗證", "🔓");
+            } else if (pwd !== null) {
+                alert("密碼錯誤！");
             }
         });
 
-        // ==========================================
-        // 4. 雲端資料庫初始化 (Firebase Setup)
-        // ==========================================
-        let isFirebaseReady = false;
-        let app, auth, db, currentUser, mainDocRef;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'class-4c-dynamic-app';
+        document.getElementById('btn-logout').addEventListener('click', () => switchView('main'));
+        document.getElementById('btn-save').addEventListener('click', saveData);
 
-        async function initializeAppWithAuth() {
-            try {
-                let firebaseConfig = {};
-                
-                // 優先使用使用者自訂的 config
-                if (Object.keys(myFirebaseConfig).length > 0 && myFirebaseConfig.apiKey) {
-                    firebaseConfig = myFirebaseConfig;
-                } else if (typeof __firebase_config !== 'undefined') {
-                    // 退回使用 AI 平台的測試 config (如果在預覽環境)
-                    firebaseConfig = JSON.parse(__firebase_config);
-                }
-                
-                // 檢查是否有正確設定檔，否則使用本地模式
-                if (Object.keys(firebaseConfig).length > 0 && firebaseConfig.apiKey) {
-                    app = initializeApp(firebaseConfig);
-                    auth = getAuth(app);
-                    db = getFirestore(app);
-                    isFirebaseReady = true;
-
-                    if (typeof __initial_auth_token !== 'undefined' && typeof __firebase_config !== 'undefined') {
-                        const cred = await signInWithCustomToken(auth, __initial_auth_token);
-                        currentUser = cred.user;
-                    } else {
-                        const cred = await signInAnonymously(auth);
-                        currentUser = cred.user;
-                    }
-
-                    const publicCollectionPath = `artifacts/${appId}/public/data/siteConfig`;
-                    mainDocRef = doc(db, publicCollectionPath, 'main');
-
-                    onSnapshot(mainDocRef, (docSnap) => {
-                        if (docSnap.exists()) {
-                            siteData = docSnap.data();
-                            renderPublicView();
-                            if (views.admin.style.display !== 'none') renderAdminForm();
-                        } else {
-                            setDoc(mainDocRef, siteData).catch(console.error);
-                        }
-                    }, (error) => {
-                        console.error("即時同步錯誤:", error);
-                    });
-                } else {
-                    console.log("未提供 Firebase 設定，將使用本機模式運作。");
-                }
-            } catch (error) {
-                console.error("雲端連線失敗，切換為本機模式運作:", error);
-            }
-        }
-
-        // 啟動應用程式
-        renderPublicView();
-        initializeAppWithAuth();
-        setInterval(renderPublicView, 1000 * 60 * 60);
+        loadData();
     </script>
 </body>
 </html>
