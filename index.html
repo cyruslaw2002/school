@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://twghkywc.edu.hk/sites/default/files/sch_logo.png" type="image/png">
     <title>4C 班級網站</title>
     <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -409,8 +410,8 @@
         }
 
         document.getElementById('btn-login').addEventListener('click', () => {
-            const pwd = prompt("請輸入管理員密碼 (預設: 123456)");
-            if(pwd === "123456") {
+            const pwd = prompt("請輸入管理員密碼");
+            if(pwd === "889966") {
                 populateAdminForm();
                 switchView('admin');
                 showToast("管理員身分已驗證", "🔓");
