@@ -58,9 +58,43 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
+        /* 側邊欄滑動過渡 */
+        #side-drawer {
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
 </head>
 <body class="text-gray-700 min-h-screen relative pb-12 overflow-x-hidden">
+
+    <!-- ================= 右上角三橫線選單按鈕 ================= -->
+    <button id="btn-open-menu" aria-label="開啟選單" class="fixed top-5 right-5 z-40 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-lg flex flex-col justify-center items-center gap-1.5 transition-all transform hover:scale-105 active:scale-95">
+        <span class="w-6 h-0.5 bg-white rounded-full"></span>
+        <span class="w-6 h-0.5 bg-white rounded-full"></span>
+        <span class="w-6 h-0.5 bg-white rounded-full"></span>
+    </button>
+
+    <!-- ================= 側邊滑出導航選單 (Drawer) ================= -->
+    <div id="menu-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden opacity-0 transition-opacity duration-300"></div>
+    
+    <aside id="side-drawer" class="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-[#0a2540] text-white z-50 transform translate-x-full shadow-2xl flex flex-col">
+        <div class="p-6 border-b border-blue-900/60 flex justify-between items-center bg-[#071b30]">
+            <div class="flex items-center gap-2 font-black text-xl tracking-wider text-blue-100">
+                <span>📚</span> 4C 學習導航
+            </div>
+            <button id="btn-close-menu" class="w-9 h-9 rounded-xl bg-blue-900/50 hover:bg-blue-800 text-blue-200 flex items-center justify-center text-xl transition">
+                ✕
+            </button>
+        </div>
+
+        <nav id="drawer-menu-list" class="flex-1 overflow-y-auto divide-y divide-blue-900/50">
+            <!-- JavaScript 自動生成選單 -->
+        </nav>
+
+        <div class="p-4 bg-[#071b30] border-t border-blue-900/60 text-xs text-blue-300/70 text-center">
+            4C 班專屬數位資源中心
+        </div>
+    </aside>
 
     <!-- Toast 提示訊息 (升級樣式) -->
     <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-3 border border-gray-700">
@@ -73,7 +107,7 @@
         <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
             
             <!-- 1. 頂部橫幅 Hero Banner -->
-            <header class="text-center py-12 px-6 glass-card rounded-[2.5rem] relative overflow-hidden group hover-lift">
+            <header class="text-center py-12 px-6 glass-card rounded-[2.5rem] relative overflow-hidden group hover-lift mt-4">
                 <!-- 裝飾性背景光暈 -->
                 <div class="absolute -top-12 -left-12 w-40 h-40 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
                 <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
@@ -180,7 +214,7 @@
 
     <!-- ================= 後台管理視圖 ================= -->
     <div id="admin-view" style="display: none;" class="max-w-3xl mx-auto px-4 py-8">
-        <div class="glass-card rounded-[2.5rem] p-8 md:p-10 border-t-8 border-gray-800 relative overflow-hidden">
+        <div class="glass-card rounded-[2.5rem] p-8 md:p-10 border-t-8 border-gray-800 relative overflow-hidden mt-4">
             <!-- 後台背景裝飾 -->
             <div class="absolute -right-20 -top-20 text-[15rem] opacity-5 pointer-events-none">⚙️</div>
             
@@ -195,6 +229,20 @@
             </div>
             
             <div class="space-y-8 relative z-10">
+                <!-- 側邊選單與訓練連結管理 -->
+                <div class="bg-blue-50/70 p-6 rounded-2xl border border-blue-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+                    <label class="flex items-center gap-2 font-bold mb-2 text-blue-900 text-lg">
+                        <span>☰</span> 右上角側邊選單（訓練與資源連結）
+                    </label>
+                    <p class="text-xs text-blue-700 mb-3 leading-relaxed">
+                        💡 <b>格式說明：</b><br>
+                        • <b>主分類（可展開）：</b>直接輸入名稱，例如 <code>數學特訓營</code><br>
+                        • <b>子連結（開頭加「- 」）：</b>輸入 <code>- 乘法練習 | https://你的網址</code><br>
+                        • <b>單一直接連結：</b>輸入 <code>中文成語遊戲 | https://你的網址</code>
+                    </p>
+                    <textarea id="edit-menu" rows="8" class="w-full p-4 bg-white border border-blue-200 rounded-xl focus:outline-none font-mono text-sm leading-relaxed"></textarea>
+                </div>
+
                 <!-- 目標日期設定 -->
                 <div class="bg-white/80 p-6 rounded-2xl border border-gray-100 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 transition-all">
                     <label class="flex items-center gap-2 font-bold mb-4 text-gray-700 text-lg">
@@ -259,7 +307,7 @@
         </button>
     </footer>
 
-    <!-- ================= 核心程式碼 (無需更動) ================= -->
+    <!-- ================= 核心程式碼 ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -275,11 +323,25 @@
             measurementId: "G-1B73TR3Z1G"
         };
 
+        // 預設側邊選單內容
+        const defaultMenuRaw = `首頁 | #top
+中文自主訓練
+- 每日閱讀理解 | https://www.google.com
+- 成語大挑戰 | https://www.google.com
+英文互動練習
+- 拼字小遊戲 | https://www.google.com
+- 聆聽訓練營 | https://www.google.com
+數學思維訓練
+- 乘除法速算 | https://www.google.com
+- 應用題闖關 | https://www.google.com
+學校網頁 | https://twghkywc.edu.hk/`;
+
         let classData = {
             countdownTitle: "下一次大考", countdownDate: "2026-12-20",
             homework: ["中文工作紙 (P.12-13)", "英文默書溫習", "數學課本練習 (Ch.4)"],
             notices: ["下週五 (10/15) 為便服日", "請記得交回家長同意書回條"],
-            honors: { h1: "陳小明", h2: "李心穎", h3: "張子豪" }
+            honors: { h1: "陳小明", h2: "李心穎", h3: "張子豪" },
+            menuRaw: defaultMenuRaw
         };
 
         let db = null;
@@ -293,6 +355,105 @@
             isCloudConnected = false;
         }
 
+        // ================= 側邊欄開關控制 =================
+        const drawer = document.getElementById('side-drawer');
+        const backdrop = document.getElementById('menu-backdrop');
+
+        function openDrawer() {
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+            drawer.classList.remove('translate-x-full');
+        }
+
+        function closeDrawer() {
+            drawer.classList.add('translate-x-full');
+            backdrop.classList.add('opacity-0');
+            setTimeout(() => backdrop.classList.add('hidden'), 300);
+        }
+
+        document.getElementById('btn-open-menu').addEventListener('click', openDrawer);
+        document.getElementById('btn-close-menu').addEventListener('click', closeDrawer);
+        backdrop.addEventListener('click', closeDrawer);
+
+        // ================= 解析並渲染側邊選單 =================
+        function renderDrawerMenu(rawText) {
+            const container = document.getElementById('drawer-menu-list');
+            const lines = (rawText || defaultMenuRaw).split('\n').filter(l => l.trim() !== '');
+            
+            const items = [];
+            let currentParent = null;
+
+            lines.forEach(line => {
+                const isSub = line.startsWith('- ') || line.startsWith('  ');
+                const cleanLine = line.replace(/^(- |\s+)/, '').trim();
+                const [title, url] = cleanLine.split('|').map(s => s.trim());
+
+                if (isSub && currentParent) {
+                    currentParent.children.push({ title, url: url || '#' });
+                } else {
+                    currentParent = { title, url: url || null, children: [] };
+                    items.push(currentParent);
+                }
+            });
+
+            container.innerHTML = items.map((item, idx) => {
+                if (item.children.length > 0) {
+                    const subHtml = item.children.map(sub => `
+                        <a href="${sub.url}" target="${sub.url.startsWith('http') ? '_blank' : '_self'}" 
+                           class="block py-3 pl-10 pr-6 text-sm text-blue-200 hover:text-white hover:bg-blue-900/60 transition flex items-center gap-2">
+                           <span class="text-cyan-400">▸</span> ${sub.title}
+                        </a>
+                    `).join('');
+
+                    return `
+                        <div class="menu-group">
+                            <button type="button" data-target="sub-${idx}" class="menu-accordion-btn w-full px-6 py-4 text-left font-bold text-base flex justify-between items-center hover:bg-blue-900/40 transition">
+                                <span>${item.title}</span>
+                                <span class="accordion-icon text-xl font-normal text-blue-300 transition-transform duration-200">+</span>
+                            </button>
+                            <div id="sub-${idx}" class="hidden bg-[#06182c] divide-y divide-blue-950/60">
+                                ${subHtml}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const isTop = item.url === '#top';
+                    return `
+                        <a href="${item.url || '#'}" target="${(item.url && item.url.startsWith('http')) ? '_blank' : '_self'}" 
+                           class="drawer-direct-link block px-6 py-4 font-bold text-base hover:bg-blue-900/40 transition flex justify-between items-center">
+                            <span>${item.title}</span>
+                            ${!isTop ? '<span class="text-xs text-blue-400">↗</span>' : ''}
+                        </a>
+                    `;
+                }
+            }).join('');
+
+            container.querySelectorAll('.menu-accordion-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = document.getElementById(btn.dataset.target);
+                    const icon = btn.querySelector('.accordion-icon');
+                    const isHidden = target.classList.contains('hidden');
+                    if (isHidden) {
+                        target.classList.remove('hidden');
+                        icon.innerText = '−';
+                    } else {
+                        target.classList.add('hidden');
+                        icon.innerText = '+';
+                    }
+                });
+            });
+
+            container.querySelectorAll('.drawer-direct-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    closeDrawer();
+                    if (link.getAttribute('href') === '#top') {
+                        switchView('main');
+                    }
+                });
+            });
+        }
+
+        // ================= UI 與資料庫邏輯 =================
         function showToast(msg, icon = "✨") {
             const toast = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
@@ -342,10 +503,12 @@
             document.getElementById('honor-2').innerText = classData.honors.h2;
             document.getElementById('honor-3').innerText = classData.honors.h3;
 
+            renderDrawerMenu(classData.menuRaw);
             updateDateAndCountdown();
         }
 
         function populateAdminForm() {
+            document.getElementById('edit-menu').value = classData.menuRaw || defaultMenuRaw;
             document.getElementById('edit-countdown-title').value = classData.countdownTitle;
             document.getElementById('edit-countdown-date').value = classData.countdownDate;
             document.getElementById('edit-homework').value = classData.homework.join('\n');
@@ -359,13 +522,13 @@
             if (isCloudConnected) {
                 onSnapshot(doc(db, "website", "content"), (docSnap) => {
                     if (docSnap.exists()) {
-                        classData = docSnap.data();
+                        classData = { ...classData, ...docSnap.data() };
                     }
                     renderDataToUI();
                 });
             } else {
                 const localData = localStorage.getItem('class4C_data');
-                if (localData) classData = JSON.parse(localData);
+                if (localData) classData = { ...classData, ...JSON.parse(localData) };
                 renderDataToUI();
             }
         }
@@ -377,6 +540,7 @@
             btn.classList.add('opacity-80');
 
             const newData = {
+                menuRaw: document.getElementById('edit-menu').value || defaultMenuRaw,
                 countdownTitle: document.getElementById('edit-countdown-title').value || '目標',
                 countdownDate: document.getElementById('edit-countdown-date').value || classData.countdownDate,
                 homework: document.getElementById('edit-homework').value.split('\n').filter(i => i.trim() !== ''),
