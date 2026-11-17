@@ -12,14 +12,12 @@
     <style>
         body { 
             font-family: 'Noto Sans TC', sans-serif; 
-            /* 童趣圓點背景 */
             background-color: #fdfbf7;
             background-image: radial-gradient(#e5e7eb 1.5px, transparent 1.5px);
             background-size: 24px 24px;
         }
         .number-font { font-family: 'Nunito', sans-serif; }
         
-        /* 毛玻璃與高級陰影卡片 */
         .glass-card { 
             background: rgba(255, 255, 255, 0.85); 
             backdrop-filter: blur(12px); 
@@ -27,7 +25,6 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03); 
         }
         
-        /* 卡片懸浮互動效果 */
         .hover-lift {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -37,7 +34,6 @@
             border-color: rgba(255, 255, 255, 1);
         }
 
-        /* 漸層文字 */
         .gradient-text { 
             background: linear-gradient(135deg, #3b82f6, #06b6d4, #10b981); 
             -webkit-background-clip: text; 
@@ -46,7 +42,6 @@
             animation: gradientMove 4s ease infinite;
         }
 
-        /* 漂浮動畫 */
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-12px); }
@@ -59,7 +54,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 側邊欄滑動過渡 */
         #side-drawer {
             transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -91,11 +85,53 @@
             <!-- JavaScript 自動生成選單 -->
         </nav>
 
+        <div class="p-4 bg-[#071b30] border-t border-blue-900/60 text-xs text-blue-300/70 text-center">
+            4C 班專屬數位資源中心
+        </div>
     </aside>
+
+    <!-- ================= 管理員安全登入視窗 (Modal) ================= -->
+    <div id="login-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-gray-100 relative animate-[fadeIn_0.2s_ease-out]">
+            <button type="button" id="btn-close-login-modal" aria-label="關閉登入視窗" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center text-lg transition">
+                ✕
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-inner">
+                    🔐
+                </div>
+                <h2 class="text-2xl font-black text-gray-800">管理員安全登入</h2>
+                <p class="text-sm text-gray-500 mt-1">請使用 Firebase 授權之管理員電郵登入</p>
+            </div>
+
+            <!-- 錯誤訊息提示區 -->
+            <div id="login-error" class="hidden mb-4 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm font-bold text-center">
+                登入失敗
+            </div>
+
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="login-email" class="block text-sm font-bold text-gray-700 mb-1.5">管理員電子郵件</label>
+                    <input type="email" id="login-email" required autocomplete="username" placeholder="example@school.edu.hk"
+                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+
+                <div>
+                    <label for="login-password" class="block text-sm font-bold text-gray-700 mb-1.5">密碼</label>
+                    <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••"
+                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+
+                <button type="submit" id="btn-submit-login" class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-black text-lg py-3.5 rounded-xl shadow-lg transition transform active:scale-98 flex justify-center items-center gap-2 mt-2">
+                    <span>🔓</span> 驗證並進入後台
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- ================= 照片全螢幕燈箱 (Lightbox) ================= -->
     <div id="lightbox-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex-col justify-between p-4 select-none">
-        <!-- 頂部資訊列 -->
         <div class="flex justify-between items-center text-white max-w-5xl w-full mx-auto pt-2">
             <div>
                 <span id="lightbox-title" class="font-bold text-lg text-blue-200">相簿名稱</span>
@@ -106,7 +142,6 @@
             </button>
         </div>
 
-        <!-- 中央圖片與左右切換 -->
         <div class="relative flex-1 flex items-center justify-center my-4 max-w-6xl w-full mx-auto">
             <button id="btn-prev-photo" aria-label="上一張" class="absolute left-1 md:left-4 z-10 w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/15 hover:bg-white/30 text-white text-2xl flex items-center justify-center transition backdrop-blur-xs">
                 ‹
@@ -117,7 +152,6 @@
             </button>
         </div>
 
-        <!-- 底部提示 -->
         <div class="text-center text-gray-400 text-xs pb-2">
             點擊左右箭頭切換照片，或按 ESC 鍵關閉
         </div>
@@ -203,19 +237,16 @@
                 </h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
-                    <!-- 閱讀小達人 -->
                     <div class="group bg-white/60 hover:bg-purple-50 p-6 rounded-3xl border border-purple-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
                         <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center text-4xl mb-4 mx-auto shadow-inner group-hover:scale-110 transition-transform">📖</div>
                         <div class="text-sm font-bold text-purple-400 uppercase tracking-widest mb-1">閱讀小達人</div>
                         <div id="honor-1" class="text-2xl font-black text-purple-700">載入中...</div>
                     </div>
-                    <!-- 熱心助人獎 -->
                     <div class="group bg-white/60 hover:bg-red-50 p-6 rounded-3xl border border-red-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
                         <div class="w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center text-4xl mb-4 mx-auto shadow-inner group-hover:scale-110 transition-transform">🤝</div>
                         <div class="text-sm font-bold text-red-400 uppercase tracking-widest mb-1">熱心助人獎</div>
                         <div id="honor-2" class="text-2xl font-black text-red-600">載入中...</div>
                     </div>
-                    <!-- 進步之星 -->
                     <div class="group bg-white/60 hover:bg-green-50 p-6 rounded-3xl border border-green-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
                         <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center text-4xl mb-4 mx-auto shadow-inner group-hover:scale-110 transition-transform">⭐</div>
                         <div class="text-sm font-bold text-green-400 uppercase tracking-widest mb-1">進步之星</div>
@@ -245,7 +276,6 @@
     <!-- ================= 班級相簿視圖 (獨立頁面) ================= -->
     <div id="album-view" style="display: none;">
         <div class="max-w-5xl mx-auto px-4 py-8 space-y-6">
-            <!-- 相簿頁面頂部欄 -->
             <div class="glass-card rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row justify-between items-center gap-4 mt-4 border-t-4 border-slate-700">
                 <div class="flex items-center gap-3">
                     <span class="bg-slate-700 text-white p-3 rounded-2xl text-2xl shadow-sm">📸</span>
@@ -259,7 +289,6 @@
                 </button>
             </div>
 
-            <!-- 活動相簿資料夾列表容器 -->
             <div id="album-folders-container" class="space-y-4">
                 <!-- JavaScript 自動生成活動資料夾與相片牆 -->
             </div>
@@ -272,13 +301,23 @@
             <div class="absolute -right-20 -top-20 text-[15rem] opacity-5 pointer-events-none">⚙️</div>
             
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-200 pb-6 gap-4 relative z-10">
-                <h2 class="text-3xl font-black flex items-center gap-3 text-gray-800">
-                    <span class="bg-gray-800 text-white p-2 rounded-xl text-xl shadow-lg">⚙️</span> 
-                    內容管理系統
-                </h2>
-                <button id="btn-logout" class="bg-white border-2 border-gray-200 hover:border-gray-800 hover:bg-gray-800 hover:text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2">
-                    <span>🔙</span> 返回首頁
-                </button>
+                <div>
+                    <h2 class="text-3xl font-black flex items-center gap-3 text-gray-800">
+                        <span class="bg-gray-800 text-white p-2 rounded-xl text-xl shadow-lg">⚙️</span> 
+                        內容管理系統
+                    </h2>
+                    <p id="admin-user-badge" class="text-xs font-bold text-emerald-600 mt-1.5 flex items-center gap-1">
+                        <span>●</span> 已登入管理員帳號
+                    </p>
+                </div>
+                <div class="flex items-center gap-2.5">
+                    <button id="btn-back-home" class="bg-white border-2 border-gray-200 hover:border-gray-800 hover:bg-gray-800 hover:text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center gap-1.5 text-sm">
+                        <span>🔙</span> 返回首頁
+                    </button>
+                    <button id="btn-signout" class="bg-red-50 border-2 border-red-200 hover:bg-red-600 hover:border-red-600 text-red-600 hover:text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-sm flex items-center gap-1.5 text-sm">
+                        <span>🚪</span> 登出帳號
+                    </button>
+                </div>
             </div>
             
             <div class="space-y-8 relative z-10">
@@ -298,7 +337,6 @@
                         您可以把照片上傳到 GitHub 專案中的 <code>photos</code> 資料夾，然後在下方輸入 <code>photos/檔名.jpg</code>（每行一張）；或者直接貼上網路圖片網址（<code>https://...</code>）。
                     </p>
                     
-                    <!-- 動態相簿編輯器列表 -->
                     <div id="admin-albums-list" class="space-y-4">
                         <!-- JavaScript 自動生成每個相簿的編輯卡片 -->
                     </div>
@@ -386,8 +424,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // 您的 Firebase 金鑰設定
+        // 您的 Firebase 金鑰設定（不包含任何密碼）
         const firebaseConfig = {
             apiKey: "AIzaSyBFFpZFZl4ckwJPnW4G0_cQ6qQrkzAAeE8",
             authDomain: "class-4c.firebaseapp.com",
@@ -398,7 +437,6 @@
             measurementId: "G-1B73TR3Z1G"
         };
 
-        // 預設側邊選單內容 (已加入班級相簿)
         const defaultMenuRaw = `首頁 | #top
 班級相簿 | #album
 中文自主訓練
@@ -412,7 +450,6 @@
 - 應用題闖關 | https://www.google.com
 學校網頁 | https://twghkywc.edu.hk/`;
 
-        // 預設示範相簿 (老師可於後台隨時修改或刪除)
         const defaultAlbums = [
             {
                 title: "開學活動",
@@ -448,15 +485,101 @@
         };
 
         let db = null;
+        let auth = null;
+        let currentUser = null;
         let isCloudConnected = false;
 
         try {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
+            auth = getAuth(app);
             isCloudConnected = true;
         } catch (error) {
             isCloudConnected = false;
         }
+
+        // ================= Firebase Auth 狀態監聽 =================
+        if (auth) {
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                const loginBtn = document.getElementById('btn-login');
+                const userBadge = document.getElementById('admin-user-badge');
+                if (user) {
+                    loginBtn.innerHTML = `⚙️ 管理員後台 (${escapeHtml(user.email)})`;
+                    loginBtn.classList.add('text-blue-600', 'font-bold');
+                    if (userBadge) {
+                        userBadge.innerHTML = `<span>●</span> 已登入：${escapeHtml(user.email)}`;
+                    }
+                } else {
+                    loginBtn.innerHTML = `🔒 管理員登入`;
+                    loginBtn.classList.remove('text-blue-600', 'font-bold');
+                }
+            });
+        }
+
+        // ================= 安全登入視窗控制 =================
+        const loginModal = document.getElementById('login-modal');
+        const loginForm = document.getElementById('login-form');
+        const loginEmailInput = document.getElementById('login-email');
+        const loginPasswordInput = document.getElementById('login-password');
+        const loginErrorBox = document.getElementById('login-error');
+
+        function openLoginModal() {
+            loginErrorBox.classList.add('hidden');
+            loginPasswordInput.value = '';
+            loginModal.classList.remove('hidden');
+            loginModal.classList.add('flex');
+            setTimeout(() => loginEmailInput.focus(), 50);
+        }
+
+        function closeLoginModal() {
+            loginModal.classList.add('hidden');
+            loginModal.classList.remove('flex');
+            loginPasswordInput.value = '';
+        }
+
+        document.getElementById('btn-close-login-modal').addEventListener('click', closeLoginModal);
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) closeLoginModal();
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!auth) {
+                showToast("❌ Firebase 驗證服務尚未初始化", "⚠️");
+                return;
+            }
+
+            const email = loginEmailInput.value.trim();
+            const password = loginPasswordInput.value;
+            const submitBtn = document.getElementById('btn-submit-login');
+
+            loginErrorBox.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="animate-spin text-xl">⏳</span> 驗證中...`;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                closeLoginModal();
+                populateAdminForm();
+                switchView('admin');
+                showToast("管理員身分已驗證", "🔓");
+            } catch (error) {
+                let errMsg = "登入失敗，請檢查電郵或密碼。";
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                    errMsg = "電郵地址或密碼不正確！";
+                } else if (error.code === 'auth/invalid-email') {
+                    errMsg = "請輸入有效的電子郵件格式！";
+                } else if (error.code === 'auth/too-many-requests') {
+                    errMsg = "嘗試次數過多，請稍後再試！";
+                }
+                loginErrorBox.innerText = errMsg;
+                loginErrorBox.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>🔓</span> 驗證並進入後台`;
+            }
+        });
 
         // ================= 視圖切換控制 =================
         function switchView(view) {
@@ -491,7 +614,6 @@
             const container = document.getElementById('drawer-menu-list');
             let textToParse = rawText || defaultMenuRaw;
             
-            // 若舊雲端資料尚未包含 #album，自動補上「班級相簿」項目方便存取
             if (!textToParse.includes('#album')) {
                 textToParse = `首頁 | #top\n班級相簿 | #album\n` + textToParse.replace(/^首頁\s*\|\s*#top\s*\n?/m, '');
             }
@@ -549,7 +671,6 @@
                 }
             }).join('');
 
-            // 手風琴展開/收合
             container.querySelectorAll('.menu-accordion-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const target = document.getElementById(btn.dataset.target);
@@ -560,7 +681,6 @@
                 });
             });
 
-            // 選單點擊導航
             container.querySelectorAll('.drawer-nav-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     const href = link.getAttribute('href');
@@ -579,7 +699,7 @@
             });
         }
 
-        // ================= 渲染班級相簿頁面 (仿照圖片資料夾樣式) =================
+        // ================= 渲染班級相簿頁面 =================
         function renderAlbumsPage() {
             const container = document.getElementById('album-folders-container');
             const albums = classData.albums || [];
@@ -595,7 +715,7 @@
 
             container.innerHTML = albums.map((album, albumIdx) => {
                 const photos = album.photos || [];
-                const isOpen = album.defaultOpen !== false && albumIdx === 1 || album.defaultOpen === true;
+                const isOpen = album.defaultOpen === true;
                 
                 const photosGridHtml = photos.map((photoUrl, photoIdx) => `
                     <div data-album-idx="${albumIdx}" data-photo-idx="${photoIdx}" 
@@ -611,7 +731,6 @@
 
                 return `
                     <div class="album-folder-card rounded-xl overflow-hidden shadow-sm border border-slate-200/80 bg-white">
-                        <!-- 深色資料夾標題列 (完全還原截圖設計) -->
                         <button type="button" data-folder-body="folder-body-${albumIdx}" 
                                 class="album-folder-header w-full bg-[#334155] hover:bg-[#1e293b] text-white px-5 py-3.5 flex justify-between items-center transition-colors text-left">
                             <div class="flex items-center gap-3">
@@ -626,7 +745,6 @@
                             </div>
                         </button>
 
-                        <!-- 展開的照片縮圖牆 -->
                         <div id="folder-body-${albumIdx}" class="${isOpen ? 'block' : 'hidden'} p-4 md:p-5 bg-[#f8fafc]">
                             ${photos.length > 0 
                                 ? `<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-2.5">${photosGridHtml}</div>`
@@ -638,7 +756,6 @@
                 `;
             }).join('');
 
-            // 綁定資料夾展開/收合事件
             container.querySelectorAll('.album-folder-header').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const body = document.getElementById(btn.dataset.folderBody);
@@ -652,7 +769,6 @@
                 });
             });
 
-            // 綁定點擊照片放大燈箱
             container.querySelectorAll('.album-photo-thumb').forEach(thumb => {
                 thumb.addEventListener('click', () => {
                     const aIdx = parseInt(thumb.dataset.albumIdx, 10);
@@ -706,11 +822,15 @@
             if (e.target.id === 'lightbox-modal') closeLightbox();
         });
         document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+                closeLoginModal();
+            }
             const modal = document.getElementById('lightbox-modal');
-            if (modal.classList.contains('hidden')) return;
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') { currentLightboxPhotoIdx--; updateLightboxContent(); }
-            if (e.key === 'ArrowRight') { currentLightboxPhotoIdx++; updateLightboxContent(); }
+            if (!modal.classList.contains('hidden')) {
+                if (e.key === 'ArrowLeft') { currentLightboxPhotoIdx--; updateLightboxContent(); }
+                if (e.key === 'ArrowRight') { currentLightboxPhotoIdx++; updateLightboxContent(); }
+            }
         });
 
         // ================= 後台：動態相簿管理編輯器 =================
@@ -756,7 +876,6 @@
                 </div>
             `).join('');
 
-            // 即時同步輸入到 editingAlbums 陣列
             listEl.querySelectorAll('.album-input').forEach(el => {
                 el.addEventListener('input', () => {
                     const idx = parseInt(el.dataset.idx, 10);
@@ -868,7 +987,6 @@
             document.getElementById('edit-h2').value = classData.honors.h2;
             document.getElementById('edit-h3').value = classData.honors.h3;
 
-            // 深拷貝現有相簿供後台編輯
             editingAlbums = JSON.parse(JSON.stringify(classData.albums || defaultAlbums));
             renderAdminAlbumsEditor();
         }
@@ -901,12 +1019,17 @@
         }
 
         async function saveData() {
+            if (isCloudConnected && !currentUser) {
+                showToast("❌ 登入已過期，請重新登入管理員帳號", "⚠️");
+                openLoginModal();
+                return;
+            }
+
             const btn = document.getElementById('btn-save');
             btn.innerHTML = `<span class="animate-spin text-2xl">⏳</span> 儲存中...`;
             btn.disabled = true;
             btn.classList.add('opacity-80');
 
-            // 清理相簿空標題
             const cleanedAlbums = editingAlbums.map(a => ({
                 title: (a.title || '未命名活動').trim(),
                 date: a.date || '',
@@ -933,7 +1056,8 @@
                     await setDoc(doc(db, "website", "content"), newData);
                     showToast("✅ 已成功發布至首頁與相簿！", "🚀");
                 } catch (error) {
-                    showToast("❌ 儲存失敗，請檢查權限", "⚠️");
+                    console.error("寫入失敗：", error);
+                    showToast("❌ 權限不足！請確認 Firestore 規則中的管理員電郵是否相符", "⚠️");
                 }
             } else {
                 localStorage.setItem('class4C_data', JSON.stringify(newData));
@@ -954,17 +1078,24 @@
         document.getElementById('btn-back-from-album').addEventListener('click', () => switchView('main'));
 
         document.getElementById('btn-login').addEventListener('click', () => {
-            const pwd = prompt("請輸入管理員密碼");
-            if(pwd === "889966") {
+            if (currentUser) {
                 populateAdminForm();
                 switchView('admin');
-                showToast("管理員身分已驗證", "🔓");
-            } else if (pwd !== null) {
-                alert("密碼錯誤！");
+            } else {
+                openLoginModal();
             }
         });
 
-        document.getElementById('btn-logout').addEventListener('click', () => switchView('main'));
+        document.getElementById('btn-back-home').addEventListener('click', () => switchView('main'));
+
+        document.getElementById('btn-signout').addEventListener('click', async () => {
+            if (auth) {
+                await signOut(auth);
+            }
+            switchView('main');
+            showToast("已安全登出管理員帳號", "👋");
+        });
+
         document.getElementById('btn-save').addEventListener('click', saveData);
 
         loadData();
