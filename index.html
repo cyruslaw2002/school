@@ -75,7 +75,7 @@
     </button>
 
     <!-- ================= 側邊滑出導航選單 (Drawer) ================= -->
-    <div id="menu-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="menu-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
     
     <aside id="side-drawer" class="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-[#0a2540] text-white z-50 transform translate-x-full shadow-2xl flex flex-col">
         <div class="p-6 border-b border-blue-900/60 flex justify-between items-center bg-[#071b30]">
@@ -96,7 +96,37 @@
         </div>
     </aside>
 
-    <!-- Toast 提示訊息 (升級樣式) -->
+    <!-- ================= 照片全螢幕燈箱 (Lightbox) ================= -->
+    <div id="lightbox-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex-col justify-between p-4 select-none">
+        <!-- 頂部資訊列 -->
+        <div class="flex justify-between items-center text-white max-w-5xl w-full mx-auto pt-2">
+            <div>
+                <span id="lightbox-title" class="font-bold text-lg text-blue-200">相簿名稱</span>
+                <span id="lightbox-counter" class="ml-3 text-sm text-gray-400 font-mono">1 / 1</span>
+            </div>
+            <button id="btn-close-lightbox" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-2xl transition">
+                ✕
+            </button>
+        </div>
+
+        <!-- 中央圖片與左右切換 -->
+        <div class="relative flex-1 flex items-center justify-center my-4 max-w-6xl w-full mx-auto">
+            <button id="btn-prev-photo" aria-label="上一張" class="absolute left-1 md:left-4 z-10 w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/15 hover:bg-white/30 text-white text-2xl flex items-center justify-center transition backdrop-blur-xs">
+                ‹
+            </button>
+            <img id="lightbox-img" src="" alt="相片預覽" class="max-h-[78vh] max-w-[88vw] object-contain rounded-xl shadow-2xl transition-all duration-200">
+            <button id="btn-next-photo" aria-label="下一張" class="absolute right-1 md:right-4 z-10 w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/15 hover:bg-white/30 text-white text-2xl flex items-center justify-center transition backdrop-blur-xs">
+                ›
+            </button>
+        </div>
+
+        <!-- 底部提示 -->
+        <div class="text-center text-gray-400 text-xs pb-2">
+            點擊左右箭頭切換照片，或按 ESC 鍵關閉
+        </div>
+    </div>
+
+    <!-- Toast 提示訊息 -->
     <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-3 border border-gray-700">
         <span id="toast-icon" class="text-xl">✨</span>
         <span id="toast-msg" class="font-bold tracking-wide">提示訊息</span>
@@ -108,15 +138,19 @@
             
             <!-- 1. 頂部橫幅 Hero Banner -->
             <header class="text-center py-12 px-6 glass-card rounded-[2.5rem] relative overflow-hidden group hover-lift mt-4">
-                <!-- 裝飾性背景光暈 -->
                 <div class="absolute -top-12 -left-12 w-40 h-40 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
                 <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
                 
                 <div class="text-6xl mb-6 animate-float inline-block">🏫</div>
                 <h1 class="text-4xl md:text-5xl font-black mb-4 text-gray-800 tracking-tight leading-tight">歡迎來到 <span class="gradient-text">4C 班</span><br class="md:hidden"> </h1>
-                <p class="inline-block bg-blue-50 text-blue-600 font-bold text-lg md:text-xl px-6 py-2 rounded-full border border-blue-100 shadow-sm mt-2">
-                    4C！4C！快過海獅！ 🦭🦭
-                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-3 mt-3">
+                    <p class="inline-block bg-blue-50 text-blue-600 font-bold text-lg md:text-xl px-6 py-2 rounded-full border border-blue-100 shadow-sm">
+                        4C！4C！快過海獅！ 🦭🦭
+                    </p>
+                    <button id="btn-go-album-hero" class="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-800 text-white font-bold text-base px-5 py-2.5 rounded-full shadow-sm transition transform hover:scale-105">
+                        <span>📸</span> 瀏覽班級相簿
+                    </button>
+                </div>
             </header>
 
             <!-- 2. 即時資訊小看板 (日期與倒數) -->
@@ -164,7 +198,6 @@
 
             <!-- 4. 榮譽榜 -->
             <div class="glass-card rounded-[2.5rem] p-8 md:p-10 text-center relative overflow-hidden">
-                <!-- 背景點綴 -->
                 <div class="absolute top-0 right-0 p-8 opacity-10 text-8xl pointer-events-none">🏆</div>
                 
                 <h2 class="text-3xl font-black mb-10 inline-flex items-center gap-3">
@@ -212,10 +245,33 @@
         </div>
     </div>
 
+    <!-- ================= 班級相簿視圖 (獨立頁面) ================= -->
+    <div id="album-view" style="display: none;">
+        <div class="max-w-5xl mx-auto px-4 py-8 space-y-6">
+            <!-- 相簿頁面頂部欄 -->
+            <div class="glass-card rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row justify-between items-center gap-4 mt-4 border-t-4 border-slate-700">
+                <div class="flex items-center gap-3">
+                    <span class="bg-slate-700 text-white p-3 rounded-2xl text-2xl shadow-sm">📸</span>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-black text-gray-800">4C 班級活動相簿</h1>
+                        <p class="text-sm text-gray-500 font-medium mt-0.5">點擊活動資料夾展開照片，點擊照片可放大檢視</p>
+                    </div>
+                </div>
+                <button id="btn-back-from-album" class="bg-white border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 px-5 py-2.5 rounded-xl font-bold transition shadow-sm flex items-center gap-2 shrink-0">
+                    <span>←</span> 返回首頁
+                </button>
+            </div>
+
+            <!-- 活動相簿資料夾列表容器 -->
+            <div id="album-folders-container" class="space-y-4">
+                <!-- JavaScript 自動生成活動資料夾與相片牆 -->
+            </div>
+        </div>
+    </div>
+
     <!-- ================= 後台管理視圖 ================= -->
     <div id="admin-view" style="display: none;" class="max-w-3xl mx-auto px-4 py-8">
         <div class="glass-card rounded-[2.5rem] p-8 md:p-10 border-t-8 border-gray-800 relative overflow-hidden mt-4">
-            <!-- 後台背景裝飾 -->
             <div class="absolute -right-20 -top-20 text-[15rem] opacity-5 pointer-events-none">⚙️</div>
             
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-200 pb-6 gap-4 relative z-10">
@@ -229,21 +285,43 @@
             </div>
             
             <div class="space-y-8 relative z-10">
-                <!-- 側邊選單與訓練連結管理 -->
+
+                <!-- 1. 班級相簿管理區塊 -->
+                <div class="bg-slate-100/80 p-6 rounded-2xl border border-slate-300 shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+                        <label class="flex items-center gap-2 font-bold text-slate-800 text-lg">
+                            <span>📸</span> 班級相簿管理（活動資料夾與照片）
+                        </label>
+                        <button type="button" id="btn-add-album" class="bg-slate-700 hover:bg-slate-800 text-white text-sm font-bold px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5">
+                            <span>＋</span> 新增活動相簿
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-600 mb-4 leading-relaxed bg-white/70 p-3 rounded-xl border border-slate-200">
+                        💡 <b>照片存放小貼士：</b><br>
+                        您可以把照片上傳到 GitHub 專案中的 <code>photos</code> 資料夾，然後在下方輸入 <code>photos/檔名.jpg</code>（每行一張）；或者直接貼上網路圖片網址（<code>https://...</code>）。
+                    </p>
+                    
+                    <!-- 動態相簿編輯器列表 -->
+                    <div id="admin-albums-list" class="space-y-4">
+                        <!-- JavaScript 自動生成每個相簿的編輯卡片 -->
+                    </div>
+                </div>
+
+                <!-- 2. 側邊選單與訓練連結管理 -->
                 <div class="bg-blue-50/70 p-6 rounded-2xl border border-blue-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 transition-all">
                     <label class="flex items-center gap-2 font-bold mb-2 text-blue-900 text-lg">
-                        <span>☰</span> 右上角側邊選單（訓練與資源連結）
+                        <span>☰</span> 右上角側邊選單（頁面與訓練連結）
                     </label>
                     <p class="text-xs text-blue-700 mb-3 leading-relaxed">
                         💡 <b>格式說明：</b><br>
+                        • <b>網站內部頁面：</b><code>首頁 | #top</code> 或 <code>班級相簿 | #album</code><br>
                         • <b>主分類（可展開）：</b>直接輸入名稱，例如 <code>數學特訓營</code><br>
-                        • <b>子連結（開頭加「- 」）：</b>輸入 <code>- 乘法練習 | https://你的網址</code><br>
-                        • <b>單一直接連結：</b>輸入 <code>中文成語遊戲 | https://你的網址</code>
+                        • <b>子連結（開頭加「- 」）：</b>輸入 <code>- 乘法練習 | https://你的網址</code>
                     </p>
                     <textarea id="edit-menu" rows="8" class="w-full p-4 bg-white border border-blue-200 rounded-xl focus:outline-none font-mono text-sm leading-relaxed"></textarea>
                 </div>
 
-                <!-- 目標日期設定 -->
+                <!-- 3. 目標日期設定 -->
                 <div class="bg-white/80 p-6 rounded-2xl border border-gray-100 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 transition-all">
                     <label class="flex items-center gap-2 font-bold mb-4 text-gray-700 text-lg">
                         <span class="text-blue-500">🎯</span> 倒數計時設定
@@ -254,7 +332,7 @@
                     </div>
                 </div>
 
-                <!-- 功課編輯 -->
+                <!-- 4. 功課編輯 -->
                 <div class="bg-white/80 p-6 rounded-2xl border border-gray-100 shadow-sm focus-within:ring-2 focus-within:ring-yellow-400 transition-all">
                     <label class="flex items-center gap-2 font-bold mb-4 text-gray-700 text-lg">
                         <span class="text-yellow-500">📝</span> 今日功課 (每行一項)
@@ -262,7 +340,7 @@
                     <textarea id="edit-homework" rows="4" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:bg-white transition leading-relaxed resize-none"></textarea>
                 </div>
 
-                <!-- 通告編輯 -->
+                <!-- 5. 通告編輯 -->
                 <div class="bg-white/80 p-6 rounded-2xl border border-gray-100 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 transition-all">
                     <label class="flex items-center gap-2 font-bold mb-4 text-gray-700 text-lg">
                         <span class="text-blue-500">📢</span> 最新通告 (每行一項)
@@ -270,7 +348,7 @@
                     <textarea id="edit-notices" rows="4" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:bg-white transition leading-relaxed resize-none"></textarea>
                 </div>
 
-                <!-- 榮譽榜編輯 -->
+                <!-- 6. 榮譽榜編輯 -->
                 <div class="bg-white/80 p-6 rounded-2xl border border-gray-100 shadow-sm transition-all">
                     <label class="flex items-center gap-2 font-bold mb-6 text-gray-700 text-lg">
                         <span class="text-yellow-500">🏆</span> 榮譽榜學生姓名
@@ -292,7 +370,7 @@
                 </div>
 
                 <button id="btn-save" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-black text-xl py-5 rounded-2xl shadow-xl transition-all transform hover:-translate-y-1 hover:shadow-2xl flex justify-center items-center gap-2">
-                    <span>💾</span> 儲存並發布至首頁
+                    <span>💾</span> 儲存並發布所有內容
                 </button>
             </div>
         </div>
@@ -323,8 +401,9 @@
             measurementId: "G-1B73TR3Z1G"
         };
 
-        // 預設側邊選單內容
+        // 預設側邊選單內容 (已加入班級相簿)
         const defaultMenuRaw = `首頁 | #top
+班級相簿 | #album
 中文自主訓練
 - 每日閱讀理解 | https://www.google.com
 - 成語大挑戰 | https://www.google.com
@@ -336,12 +415,39 @@
 - 應用題闖關 | https://www.google.com
 學校網頁 | https://twghkywc.edu.hk/`;
 
+        // 預設示範相簿 (老師可於後台隨時修改或刪除)
+        const defaultAlbums = [
+            {
+                title: "開學活動",
+                date: "2026-09-02",
+                defaultOpen: false,
+                photos: [
+                    "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                title: "環校跑 2026",
+                date: "2026-11-10",
+                defaultOpen: true,
+                photos: [
+                    "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80"
+                ]
+            }
+        ];
+
         let classData = {
-            countdownTitle: "下一次大考", countdownDate: "2026-12-20",
+            countdownTitle: "下一次大考", 
+            countdownDate: "2026-12-20",
             homework: ["中文工作紙 (P.12-13)", "英文默書溫習", "數學課本練習 (Ch.4)"],
             notices: ["下週五 (10/15) 為便服日", "請記得交回家長同意書回條"],
             honors: { h1: "陳小明", h2: "李心穎", h3: "張子豪" },
-            menuRaw: defaultMenuRaw
+            menuRaw: defaultMenuRaw,
+            albums: defaultAlbums
         };
 
         let db = null;
@@ -353,6 +459,14 @@
             isCloudConnected = true;
         } catch (error) {
             isCloudConnected = false;
+        }
+
+        // ================= 視圖切換控制 =================
+        function switchView(view) {
+            document.getElementById('main-view').style.display = (view === 'main') ? 'block' : 'none';
+            document.getElementById('album-view').style.display = (view === 'album') ? 'block' : 'none';
+            document.getElementById('admin-view').style.display = (view === 'admin') ? 'block' : 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ================= 側邊欄開關控制 =================
@@ -378,8 +492,14 @@
         // ================= 解析並渲染側邊選單 =================
         function renderDrawerMenu(rawText) {
             const container = document.getElementById('drawer-menu-list');
-            const lines = (rawText || defaultMenuRaw).split('\n').filter(l => l.trim() !== '');
+            let textToParse = rawText || defaultMenuRaw;
             
+            // 若舊雲端資料尚未包含 #album，自動補上「班級相簿」項目方便存取
+            if (!textToParse.includes('#album')) {
+                textToParse = `首頁 | #top\n班級相簿 | #album\n` + textToParse.replace(/^首頁\s*\|\s*#top\s*\n?/m, '');
+            }
+
+            const lines = textToParse.split('\n').filter(l => l.trim() !== '');
             const items = [];
             let currentParent = null;
 
@@ -398,17 +518,20 @@
 
             container.innerHTML = items.map((item, idx) => {
                 if (item.children.length > 0) {
-                    const subHtml = item.children.map(sub => `
-                        <a href="${sub.url}" target="${sub.url.startsWith('http') ? '_blank' : '_self'}" 
-                           class="block py-3 pl-10 pr-6 text-sm text-blue-200 hover:text-white hover:bg-blue-900/60 transition flex items-center gap-2">
-                           <span class="text-cyan-400">▸</span> ${sub.title}
-                        </a>
-                    `).join('');
+                    const subHtml = item.children.map(sub => {
+                        const isInternal = sub.url.startsWith('#');
+                        return `
+                            <a href="${sub.url}" target="${isInternal ? '_self' : '_blank'}" 
+                               class="drawer-nav-link block py-3 pl-10 pr-6 text-sm text-blue-200 hover:text-white hover:bg-blue-900/60 transition flex items-center gap-2">
+                               <span class="text-cyan-400">▸</span> ${escapeHtml(sub.title)}
+                            </a>
+                        `;
+                    }).join('');
 
                     return `
                         <div class="menu-group">
                             <button type="button" data-target="sub-${idx}" class="menu-accordion-btn w-full px-6 py-4 text-left font-bold text-base flex justify-between items-center hover:bg-blue-900/40 transition">
-                                <span>${item.title}</span>
+                                <span>${escapeHtml(item.title)}</span>
                                 <span class="accordion-icon text-xl font-normal text-blue-300 transition-transform duration-200">+</span>
                             </button>
                             <div id="sub-${idx}" class="hidden bg-[#06182c] divide-y divide-blue-950/60">
@@ -417,43 +540,281 @@
                         </div>
                     `;
                 } else {
-                    const isTop = item.url === '#top';
+                    const url = item.url || '#';
+                    const isInternal = url.startsWith('#');
                     return `
-                        <a href="${item.url || '#'}" target="${(item.url && item.url.startsWith('http')) ? '_blank' : '_self'}" 
-                           class="drawer-direct-link block px-6 py-4 font-bold text-base hover:bg-blue-900/40 transition flex justify-between items-center">
-                            <span>${item.title}</span>
-                            ${!isTop ? '<span class="text-xs text-blue-400">↗</span>' : ''}
+                        <a href="${url}" target="${isInternal ? '_self' : '_blank'}" 
+                           class="drawer-nav-link block px-6 py-4 font-bold text-base hover:bg-blue-900/40 transition flex justify-between items-center">
+                            <span>${escapeHtml(item.title)}</span>
+                            ${!isInternal ? '<span class="text-xs text-blue-400">↗</span>' : ''}
                         </a>
                     `;
                 }
             }).join('');
 
+            // 手風琴展開/收合
             container.querySelectorAll('.menu-accordion-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const target = document.getElementById(btn.dataset.target);
                     const icon = btn.querySelector('.accordion-icon');
                     const isHidden = target.classList.contains('hidden');
-                    if (isHidden) {
-                        target.classList.remove('hidden');
-                        icon.innerText = '−';
-                    } else {
-                        target.classList.add('hidden');
-                        icon.innerText = '+';
-                    }
+                    target.classList.toggle('hidden', !isHidden);
+                    icon.innerText = isHidden ? '−' : '+';
                 });
             });
 
-            container.querySelectorAll('.drawer-direct-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    closeDrawer();
-                    if (link.getAttribute('href') === '#top') {
-                        switchView('main');
+            // 選單點擊導航
+            container.querySelectorAll('.drawer-nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+                        closeDrawer();
+                        if (href === '#album') {
+                            switchView('album');
+                        } else {
+                            switchView('main');
+                        }
+                    } else {
+                        closeDrawer();
                     }
                 });
             });
         }
 
-        // ================= UI 與資料庫邏輯 =================
+        // ================= 渲染班級相簿頁面 (仿照圖片資料夾樣式) =================
+        function renderAlbumsPage() {
+            const container = document.getElementById('album-folders-container');
+            const albums = classData.albums || [];
+
+            if (albums.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-card rounded-3xl p-12 text-center text-gray-400">
+                        <div class="text-5xl mb-3">📷</div>
+                        <p class="font-bold text-lg">目前尚未建立任何活動相簿</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = albums.map((album, albumIdx) => {
+                const photos = album.photos || [];
+                const isOpen = album.defaultOpen !== false && albumIdx === 1 || album.defaultOpen === true;
+                
+                const photosGridHtml = photos.map((photoUrl, photoIdx) => `
+                    <div data-album-idx="${albumIdx}" data-photo-idx="${photoIdx}" 
+                         class="album-photo-thumb aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-xs cursor-pointer group relative">
+                        <img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(album.title)} 照片 ${photoIdx + 1}" loading="lazy"
+                             onerror="this.src='https://placehold.co/400x300/e2e8f0/64748b?text=圖片載入失敗'"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                            <span class="opacity-0 group-hover:opacity-100 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full transition-opacity">🔍 放大</span>
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="album-folder-card rounded-xl overflow-hidden shadow-sm border border-slate-200/80 bg-white">
+                        <!-- 深色資料夾標題列 (完全還原截圖設計) -->
+                        <button type="button" data-folder-body="folder-body-${albumIdx}" 
+                                class="album-folder-header w-full bg-[#334155] hover:bg-[#1e293b] text-white px-5 py-3.5 flex justify-between items-center transition-colors text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xl folder-icon">${isOpen ? '📂' : '📁'}</span>
+                                <span class="font-bold text-base md:text-lg tracking-wide">${escapeHtml(album.title)}</span>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <span class="bg-slate-600/90 text-slate-100 text-xs font-bold px-3 py-1 rounded-full border border-slate-500/60">
+                                    ${photos.length} 張照片
+                                </span>
+                                <span class="folder-chevron text-slate-300 text-xs transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}">▼</span>
+                            </div>
+                        </button>
+
+                        <!-- 展開的照片縮圖牆 -->
+                        <div id="folder-body-${albumIdx}" class="${isOpen ? 'block' : 'hidden'} p-4 md:p-5 bg-[#f8fafc]">
+                            ${photos.length > 0 
+                                ? `<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-2.5">${photosGridHtml}</div>`
+                                : `<p class="text-sm text-gray-400 py-4 text-center">此資料夾暫無照片</p>`
+                            }
+                            ${album.date ? `<div class="mt-4 text-xs text-gray-400 font-medium tracking-wider">${escapeHtml(album.date)}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // 綁定資料夾展開/收合事件
+            container.querySelectorAll('.album-folder-header').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const body = document.getElementById(btn.dataset.folderBody);
+                    const icon = btn.querySelector('.folder-icon');
+                    const chevron = btn.querySelector('.folder-chevron');
+                    const willOpen = body.classList.contains('hidden');
+                    
+                    body.classList.toggle('hidden', !willOpen);
+                    icon.innerText = willOpen ? '📂' : '📁';
+                    chevron.classList.toggle('rotate-180', willOpen);
+                });
+            });
+
+            // 綁定點擊照片放大燈箱
+            container.querySelectorAll('.album-photo-thumb').forEach(thumb => {
+                thumb.addEventListener('click', () => {
+                    const aIdx = parseInt(thumb.dataset.albumIdx, 10);
+                    const pIdx = parseInt(thumb.dataset.photoIdx, 10);
+                    openLightbox(aIdx, pIdx);
+                });
+            });
+        }
+
+        // ================= 燈箱 (Lightbox) 控制邏輯 =================
+        let currentLightboxAlbumIdx = 0;
+        let currentLightboxPhotoIdx = 0;
+
+        function openLightbox(albumIdx, photoIdx) {
+            currentLightboxAlbumIdx = albumIdx;
+            currentLightboxPhotoIdx = photoIdx;
+            updateLightboxContent();
+            const modal = document.getElementById('lightbox-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightbox-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function updateLightboxContent() {
+            const album = (classData.albums || [])[currentLightboxAlbumIdx];
+            if (!album || !album.photos || album.photos.length === 0) return;
+            
+            const total = album.photos.length;
+            currentLightboxPhotoIdx = (currentLightboxPhotoIdx + total) % total;
+            
+            document.getElementById('lightbox-title').innerText = album.title;
+            document.getElementById('lightbox-counter').innerText = `${currentLightboxPhotoIdx + 1} / ${total}`;
+            document.getElementById('lightbox-img').src = album.photos[currentLightboxPhotoIdx];
+        }
+
+        document.getElementById('btn-close-lightbox').addEventListener('click', closeLightbox);
+        document.getElementById('btn-prev-photo').addEventListener('click', () => {
+            currentLightboxPhotoIdx--;
+            updateLightboxContent();
+        });
+        document.getElementById('btn-next-photo').addEventListener('click', () => {
+            currentLightboxPhotoIdx++;
+            updateLightboxContent();
+        });
+        document.getElementById('lightbox-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox-modal') closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('lightbox-modal');
+            if (modal.classList.contains('hidden')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') { currentLightboxPhotoIdx--; updateLightboxContent(); }
+            if (e.key === 'ArrowRight') { currentLightboxPhotoIdx++; updateLightboxContent(); }
+        });
+
+        // ================= 後台：動態相簿管理編輯器 =================
+        let editingAlbums = [];
+
+        function renderAdminAlbumsEditor() {
+            const listEl = document.getElementById('admin-albums-list');
+            if (editingAlbums.length === 0) {
+                listEl.innerHTML = `<p class="text-sm text-gray-400 text-center py-4">尚未建立任何相簿，請點擊右上角「＋ 新增活動相簿」。</p>`;
+                return;
+            }
+
+            listEl.innerHTML = editingAlbums.map((album, idx) => `
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-3" data-edit-album-idx="${idx}">
+                    <div class="flex flex-wrap justify-between items-center gap-2 border-b border-gray-100 pb-2">
+                        <span class="font-bold text-slate-700 text-sm">📁 活動相簿 #${idx + 1}</span>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" data-action="up" data-idx="${idx}" class="album-ctrl-btn px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded font-bold ${idx === 0 ? 'opacity-40 pointer-events-none' : ''}">↑ 上移</button>
+                            <button type="button" data-action="down" data-idx="${idx}" class="album-ctrl-btn px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded font-bold ${idx === editingAlbums.length - 1 ? 'opacity-40 pointer-events-none' : ''}">↓ 下移</button>
+                            <button type="button" data-action="delete" data-idx="${idx}" class="album-ctrl-btn px-2.5 py-1 text-xs bg-red-50 hover:bg-red-500 text-red-600 hover:text-white rounded font-bold transition">🗑️ 刪除</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="sm:col-span-2">
+                            <label class="text-xs font-bold text-gray-500 block mb-1">活動名稱</label>
+                            <input type="text" data-field="title" data-idx="${idx}" value="${escapeHtml(album.title)}" placeholder="例如：環校跑 2026" class="album-input w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 block mb-1">活動日期</label>
+                            <input type="date" data-field="date" data-idx="${idx}" value="${escapeHtml(album.date || '')}" class="album-input w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-bold text-gray-500">照片網址清單（每行一張照片）</label>
+                            <label class="inline-flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
+                                <input type="checkbox" data-field="defaultOpen" data-idx="${idx}" ${album.defaultOpen ? 'checked' : ''} class="album-checkbox rounded text-blue-600">
+                                <span>進入頁面時預設展開</span>
+                            </label>
+                        </div>
+                        <textarea data-field="photos" data-idx="${idx}" rows="3" placeholder="photos/pic1.jpg&#10;https://..." class="album-input w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg font-mono text-xs leading-relaxed">${escapeHtml((album.photos || []).join('\n'))}</textarea>
+                    </div>
+                </div>
+            `).join('');
+
+            // 即時同步輸入到 editingAlbums 陣列
+            listEl.querySelectorAll('.album-input').forEach(el => {
+                el.addEventListener('input', () => {
+                    const idx = parseInt(el.dataset.idx, 10);
+                    const field = el.dataset.field;
+                    if (field === 'photos') {
+                        editingAlbums[idx].photos = el.value.split('\n').map(s => s.trim()).filter(Boolean);
+                    } else {
+                        editingAlbums[idx][field] = el.value;
+                    }
+                });
+            });
+
+            listEl.querySelectorAll('.album-checkbox').forEach(el => {
+                el.addEventListener('change', () => {
+                    const idx = parseInt(el.dataset.idx, 10);
+                    editingAlbums[idx].defaultOpen = el.checked;
+                });
+            });
+
+            listEl.querySelectorAll('.album-ctrl-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.dataset.idx, 10);
+                    const action = btn.dataset.action;
+                    if (action === 'delete') {
+                        editingAlbums.splice(idx, 1);
+                    } else if (action === 'up' && idx > 0) {
+                        [editingAlbums[idx - 1], editingAlbums[idx]] = [editingAlbums[idx], editingAlbums[idx - 1]];
+                    } else if (action === 'down' && idx < editingAlbums.length - 1) {
+                        [editingAlbums[idx + 1], editingAlbums[idx]] = [editingAlbums[idx], editingAlbums[idx + 1]];
+                    }
+                    renderAdminAlbumsEditor();
+                });
+            });
+        }
+
+        document.getElementById('btn-add-album').addEventListener('click', () => {
+            const todayStr = new Date().toISOString().split('T')[0];
+            editingAlbums.unshift({
+                title: "新活動相簿",
+                date: todayStr,
+                defaultOpen: true,
+                photos: []
+            });
+            renderAdminAlbumsEditor();
+        });
+
+        // ================= 工具與資料更新函數 =================
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
         function showToast(msg, icon = "✨") {
             const toast = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
@@ -464,18 +825,6 @@
                 toast.classList.add('opacity-0', 'translate-y-4');
                 toast.classList.remove('translate-y-0');
             }, 3000);
-        }
-
-        function switchView(view) {
-            if(view === 'admin') {
-                document.getElementById('main-view').style.display = 'none';
-                document.getElementById('admin-view').style.display = 'block';
-                window.scrollTo({top: 0, behavior: 'smooth'});
-            } else {
-                document.getElementById('main-view').style.display = 'block';
-                document.getElementById('admin-view').style.display = 'none';
-                window.scrollTo({top: 0, behavior: 'smooth'});
-            }
         }
 
         function updateDateAndCountdown() {
@@ -493,10 +842,10 @@
         }
 
         function renderDataToUI() {
-            const hwHtml = classData.homework.map(hw => `<li class="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-gray-100 shadow-sm"><span class="text-yellow-500 mt-0.5">👉</span><span class="font-bold text-gray-700">${hw}</span></li>`).join('');
+            const hwHtml = classData.homework.map(hw => `<li class="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-gray-100 shadow-sm"><span class="text-yellow-500 mt-0.5">👉</span><span class="font-bold text-gray-700">${escapeHtml(hw)}</span></li>`).join('');
             document.getElementById('homework-list').innerHTML = hwHtml || '<li class="text-gray-400 italic">今日無功課</li>';
             
-            const notiHtml = classData.notices.map(nt => `<li class="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-gray-100 shadow-sm"><span class="text-blue-500 mt-0.5">📌</span><span class="font-bold text-gray-700">${nt}</span></li>`).join('');
+            const notiHtml = classData.notices.map(nt => `<li class="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-gray-100 shadow-sm"><span class="text-blue-500 mt-0.5">📌</span><span class="font-bold text-gray-700">${escapeHtml(nt)}</span></li>`).join('');
             document.getElementById('notices-list').innerHTML = notiHtml || '<li class="text-gray-400 italic">暫無通告</li>';
             
             document.getElementById('honor-1').innerText = classData.honors.h1;
@@ -504,11 +853,16 @@
             document.getElementById('honor-3').innerText = classData.honors.h3;
 
             renderDrawerMenu(classData.menuRaw);
+            renderAlbumsPage();
             updateDateAndCountdown();
         }
 
         function populateAdminForm() {
-            document.getElementById('edit-menu').value = classData.menuRaw || defaultMenuRaw;
+            let menuVal = classData.menuRaw || defaultMenuRaw;
+            if (!menuVal.includes('#album')) {
+                menuVal = `首頁 | #top\n班級相簿 | #album\n` + menuVal.replace(/^首頁\s*\|\s*#top\s*\n?/m, '');
+            }
+            document.getElementById('edit-menu').value = menuVal;
             document.getElementById('edit-countdown-title').value = classData.countdownTitle;
             document.getElementById('edit-countdown-date').value = classData.countdownDate;
             document.getElementById('edit-homework').value = classData.homework.join('\n');
@@ -516,19 +870,35 @@
             document.getElementById('edit-h1').value = classData.honors.h1;
             document.getElementById('edit-h2').value = classData.honors.h2;
             document.getElementById('edit-h3').value = classData.honors.h3;
+
+            // 深拷貝現有相簿供後台編輯
+            editingAlbums = JSON.parse(JSON.stringify(classData.albums || defaultAlbums));
+            renderAdminAlbumsEditor();
         }
 
         function loadData() {
             if (isCloudConnected) {
                 onSnapshot(doc(db, "website", "content"), (docSnap) => {
                     if (docSnap.exists()) {
-                        classData = { ...classData, ...docSnap.data() };
+                        const remote = docSnap.data();
+                        classData = { 
+                            ...classData, 
+                            ...remote,
+                            albums: Array.isArray(remote.albums) ? remote.albums : defaultAlbums
+                        };
                     }
                     renderDataToUI();
                 });
             } else {
                 const localData = localStorage.getItem('class4C_data');
-                if (localData) classData = { ...classData, ...JSON.parse(localData) };
+                if (localData) {
+                    const parsed = JSON.parse(localData);
+                    classData = { 
+                        ...classData, 
+                        ...parsed,
+                        albums: Array.isArray(parsed.albums) ? parsed.albums : defaultAlbums
+                    };
+                }
                 renderDataToUI();
             }
         }
@@ -538,6 +908,14 @@
             btn.innerHTML = `<span class="animate-spin text-2xl">⏳</span> 儲存中...`;
             btn.disabled = true;
             btn.classList.add('opacity-80');
+
+            // 清理相簿空標題
+            const cleanedAlbums = editingAlbums.map(a => ({
+                title: (a.title || '未命名活動').trim(),
+                date: a.date || '',
+                defaultOpen: Boolean(a.defaultOpen),
+                photos: (a.photos || []).map(p => p.trim()).filter(Boolean)
+            }));
 
             const newData = {
                 menuRaw: document.getElementById('edit-menu').value || defaultMenuRaw,
@@ -549,13 +927,14 @@
                     h1: document.getElementById('edit-h1').value || '從缺',
                     h2: document.getElementById('edit-h2').value || '從缺',
                     h3: document.getElementById('edit-h3').value || '從缺'
-                }
+                },
+                albums: cleanedAlbums
             };
 
             if (isCloudConnected) {
                 try {
                     await setDoc(doc(db, "website", "content"), newData);
-                    showToast("✅ 已成功發布至首頁！", "🚀");
+                    showToast("✅ 已成功發布至首頁與相簿！", "🚀");
                 } catch (error) {
                     showToast("❌ 儲存失敗，請檢查權限", "⚠️");
                 }
@@ -567,11 +946,15 @@
             }
 
             setTimeout(() => {
-                btn.innerHTML = `<span>💾</span> 儲存並發布至首頁`;
+                btn.innerHTML = `<span>💾</span> 儲存並發布所有內容`;
                 btn.disabled = false;
                 btn.classList.remove('opacity-80');
             }, 500);
         }
+
+        // ================= 按鈕導航綁定 =================
+        document.getElementById('btn-go-album-hero').addEventListener('click', () => switchView('album'));
+        document.getElementById('btn-back-from-album').addEventListener('click', () => switchView('main'));
 
         document.getElementById('btn-login').addEventListener('click', () => {
             const pwd = prompt("請輸入管理員密碼");
